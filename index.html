@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聚光灯效果</title>
+  <style>
+    body{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: #000;
+    }
+    h1{
+      margin: 0;
+      padding: 0;
+      position: relative;
+      color: #333;
+      font-size: 120px;
+      letter-spacing: -6px;
+    }
+    h1::after{
+      position: absolute;
+      left: 0;
+      top: 0;
+      content: attr(data-spotlight);
+      background-image: url(https://images.unsplash.com/photo-1610376124686-5e9f4f7b322e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1490&q=80);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-clip-path: circle(100px at 0% 50%);
+      clip-path: circle(100px at 0% 50%);
+      animation: spotlight 5s infinite;
+    }
+    @keyframes spotlight{
+      0% {
+        -webkit-clip-path: circle(100px at 0% 50%);
+        clip-path: circle(100px at 0% 50%);
+      }
+      50% {
+        -webkit-clip-path: circle(100px at 100% 50%);
+        clip-path: circle(100px at 100% 50%);
+      }
+      100% {
+        -webkit-clip-path: circle(100px at 0% 50%);
+        clip-path: circle(100px at 0% 50%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 data-spotlight='Holly Shit'>Holly Shit</h1>
+</body>
+</html>
