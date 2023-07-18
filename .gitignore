@@ -1,29 +1,3 @@
-# File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
-# Created by https://www.toptal.com/developers/gitignore/api/vue,vuejs
-# Edit at https://www.toptal.com/developers/gitignore?templates=vue,vuejs
-
-### Vue ###
-# gitignore template for Vue.js projects
-#
-# Recommended template: Node.gitignore
-
-# TODO: where does this rule come from?
-docs/_book
-
-# TODO: where does this rule come from?
-test/
-
-### Vuejs ###
-# Recommended template: Node.gitignore
-
-node_modules/
-dist/
-npm-debug.log
-yarn-error.log
-
-# End of https://www.toptal.com/developers/gitignore/api/vue,vuejs
-
-# Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
-
-.temp
-.cache
+.vuepress/.cache
+.vuepress/.temp
+node_modules
