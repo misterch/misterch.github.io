@@ -1,6 +1,6 @@
 ---
-title: 使用工具函数
-date: 2023/07/18
+title: 实用工具函数
+date: 2023-07-18
 categories:
  - 工具集
 tags:
@@ -13,34 +13,33 @@ tags:
 
 ### 生成数组
 
-当你需要要生成一个0-99的数组\
+当你需要要生成一个0-99的数组
 方案1
 
-```js:no-line-numbers:no-line-numbers
+```js
 const createArr = (n) => Array.from(new Array(n), (v, i) => i)
 const arr = createArr(100) // 0 - 99 数组
 ```
 
 方案2
-```js:no-line-numbers:no-line-numbers
-    const createArr = (n) => new Array(n).fill(0).map((v, i) => i)
-    createArr(100) // 0 - 99数组
+```js
+const createArr = (n) => new Array(n).fill(0).map((v, i) => i)
+createArr(100) // 0 - 99数组
 ```
 ### 打乱数组
 
 当你有一个数组，你需要打乱这个数组的排序
 
-```js:no-line-numbers:no-line-numbers
+```js
 const randomSort = list => list.sort(() => Math.random() - 0.5)
 randomSort([0,1,2,3,4,5,6,7,8,9]) // 随机排列结果
-
 ```
 
 ### 数组排序
 
 {type} 1：从小到大 2：从大到小 3：随机
 
-```js:no-line-numbers:no-line-numbers
+```js
 export const sort = (arr, type = 1) => {
     return arr.sort((a, b) => {
         switch (type) {
@@ -62,29 +61,39 @@ export const sort = (arr, type = 1) => {
   <CodeGroupItem title="ES5">
 
   ```js:no-line-numbers
-    export const contains = (arr, val) => {
-        return arr.indexOf(val) != -1 ? true : false;
-    }
+  export const contains = (arr, val) => {
+    return arr.indexOf(val) != -1 ? true : false;
+  }
   ```
   </CodeGroupItem>
 	<CodeGroupItem title="ES6">
 
-  ```js:no-line-numbers
-    //includes方法
-    const arr = [11,22,33,44,55]
-    arr.includes(22)
+  ```js
+//includes方法
+const arr = [11,22,33,44,55]
+arr.includes(22)
 
-    //find方法,返回匹配到的第一个值，之后的值不执行
-    const objArr = [{name:'ben',age:12},{name:'ken',age:22}]
-    arr.find((item)=>item.name==='ben')
+//find方法,返回匹配到的第一个值，之后的值不执行
+const objArr = [{name:'ben',age:12},{name:'ken',age:22}]
+arr.find((item)=>item.name==='ben')
 
-    //some方法，存在返回true，不存在返回false
-    arr.some((item)=>item.name==='ben')
-
+//some方法，存在返回true，不存在返回false
+arr.some((item)=>item.name==='ben')
   ```
   </CodeGroupItem>
 
 </CodeGroup>
+
+### 检查数组是否为空
+
+检查数组是否为空的简单代码，结果将返回 true 或 false。
+
+```js
+const isNotEmpty = arr => Array.isArray(arr) && arr.length > 0;
+
+isNotEmpty([1, 2, 3]);
+// Result: true
+```
 
 ### 数组简单数据去重
 
@@ -134,7 +143,6 @@ removeDuplicates([0, 0, 2, 4, 5]) // [0,2,4,5]
 const duplicateById = list => [...list.reduce((prev, cur) => prev.set(cur.id, cur), new Map()).values()]
 duplicateById([{id: 1, name: 'jack'}, {id: 2, name: 'rose'}, {id: 1, name: 'jack'}])
 // [{id: 1, name: 'jack'}, {id: 2, name: 'rose'}]
-
 ```
 
 ### 多数组取交集
@@ -150,7 +158,6 @@ const intersection = (a, ...arr) => [...new Set(a)].filter((v) => arr.every((b) 
 
 intersection([1, 2, 3, 4], [2, 3, 4, 7, 8], [1, 3, 4, 9])
 // [3, 4]
-
 ```
 
 </CodeGroupItem>
@@ -402,8 +409,8 @@ closest([29, 87, 8, 78, 97, 20, 75, 33, 24, 17], 50) // 33
 
 当你需要将多个数组压缩成一个数组
 
-```js:no-line-numbers
-css复制代码const zip = (...arr) => Array.from({ length: Math.max(...arr.map((a) => a.length)) }, (_, i) => arr.map((a) => a[i]))
+```js
+const zip = (...arr) => Array.from({ length: Math.max(...arr.map((a) => a.length)) }, (_, i) => arr.map((a) => a[i]))
 zip([1,2,3,4], ['a', 'b', 'c', 'd'], ['A', 'B', 'C', 'D'])
 // [[1, 'a', 'A'], [2, 'b', 'B'], [3, 'c', 'C'], [4, 'd', 'D']]
 
@@ -413,8 +420,8 @@ zip([1,2,3,4], ['a', 'b', 'c', 'd'], ['A', 'B', 'C', 'D'])
 
 当你需要将一个矩阵的行和列进行互相交换
 
-```js:no-line-numbers
-javascript复制代码const transpose = (matrix) => matrix[0].map((col, i) => matrix.map((row) => row[i]));
+```js
+const transpose = (matrix) => matrix[0].map((col, i) => matrix.map((row) => row[i]));
 transpose(
     [              // [
         [1, 2, 3], //      [1, 4, 7],
@@ -422,215 +429,63 @@ transpose(
         [7, 8, 9], //      [3, 6, 9],
      ]             //  ]
  ); 
-
-
 ```
 
-## 数字转换
+### 将类数组转换为数组
 
-### 进制转换
+一般是将函数`arguments`参数转换成数组
 
-将10进制转换成n进制，可以使用toString(n)
-
-```js:no-line-numbers
-const toDecimal = (num, n = 10) => num.toString(n) 
-// 假设数字10要转换成2进制
-toDecimal(10, 2) // '1010'
-
-```
-
-将n进制转换成10进制，可以使用parseInt(num, n)
-
-```js:no-line-numbers
-// 10的2进制为1010
-const toDecimalism = (num, n = 10) => parseInt(num, n)
-toDecimalism(1010, 2)
-
-```
-
-## 正则
-
-### 手机号格式化
-
-当你需要将手机号码格式化成xxx-xxxx-xxxx的形式
-
-```js:no-line-numbers
-javascript复制代码const formatPhone = (str, sign = '-') => str.replace(/(\W|\s)/g, "").split(/^(\d{3})(\d{4})(\d{4})$/).filter(item => item).join(sign)
-
-formatPhone('13123456789') // '131-2345-6789'
-formatPhone('13 1234 56 789', ' ') // '131 2345 6789'
-
-```
-
-### 去除多余空格
-
-当你需要将一段文本中的多个空格合并成一个空格
-
-```js:no-line-numbers
-const setTrimOut = str => str.replace(/\s\s+/g, ' ')
-const str = setTrimOut('hello,   jack') // 
-```
-
-### 邮箱
-
-```js:no-line-numbers
-export const isEmail = (s) => {
-    return /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(s)
+```js:{6}
+export const formArray = (ary) => {
+    var arr = [];
+    if (Array.isArray(ary)) {
+        arr = ary;
+    } else {
+        arr = Array.prototype.slice.call(ary);
+    };
+    return arr;
 }
-```
-
-### 电话号码
-
-```js:no-line-numbers
-export const isPhone = (s) => {
-    return /^([0-9]{3,4}-)?[0-9]{7,8}$/.test(s)
-}
-```
-
-### 是否URL
-
-```js:no-line-numbers
-export const isURL = (s) => {
-    return /^http[s]?:\/\/.*/.test(s)
-}
-```
-
-## web
-
-### 重新加载当前页面
-
-```js:no-line-numbers
-const reload = () => location.reload();
-reload()
-
-```
-
-### 滚动到页面顶部
-
-如果你需要将页面翻到最顶部
-
-```js:no-line-numbers
-const goToTop = () => window.scrollTo(0, 0);
-goToTop()
-
-```
-
-### 元素滚动
-
-如果你希望将一个元素顺滑的滚动到可视区域的起点
-
-```js:no-line-numbers
-const scrollToTop = (element) =>
-  element.scrollIntoView({ behavior: "smooth", block: "start" })
-scrollToTop(document.body)
-
-```
-
-如果你希望将一个元素顺滑的滚动到可视区域的终点
-
-```js:no-line-numbers
-const scrollToBottom = (element) =>
-  element.scrollIntoView({ behavior: "smooth", block: "end" })
-  scrollToBottom(document.body)
-
-```
-
-### 检查当前是否IE浏览器
-
-```js:no-line-numbers
-const isIE = !!document.documentMode;
-
-```
-
-### 从给定文本中剥离html
-
-当你需要在某个文本中将里面的标签全部过滤掉
-
-```js:no-line-numbers
-const stripHtml = (html) => new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
-stripHtml('<div>test</div>') // 'test'
-
-```
-
-### 重定向
-
-当你需要跳转到其他页面
-
-```js:no-line-numbers
-const goTo = (url) => (location.href = url);
-
-```
-
-### 文本粘贴
-
-当你需要复制文本到粘贴板上
-
-```js:no-line-numbers
-const copy = (text) => navigator.clipboard?.writeText && navigator.clipboard.writeText(text)
-copy('你需要粘贴的文本')
-
-```
-
-## 日期
-
-### 判断日期是否为今天
-
-```javascript
-const isToday = (date) => date.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10)
-
-```
-
-### 日期转换
-
-当你需要将日期转换为为 YYYY-MM-DD 格式
-
-```javascript
-const formatYmd = (date) => date.toISOString().slice(0, 10);
-formatYmd(new Date())
-
-```
-
-### 秒数转换
-
-当你需要将秒数转换为 hh\:mm\:ss 格式
-
-```javascript
-const formatSeconds = (s) => new Date(s * 1000).toISOString().substr(11, 8)
-formatSeconds(200) // 00:03:20
-
-```
-
-### 获取某年某月的第一天
-
-当你需要获取某年某月的第一天
-
-```javascript
-javascript复制代码const getFirstDate = (d = new Date()) => new Date(d.getFullYear(), d.getMonth(), 1);
-getFirstDate(new Date('2022-04')) // Fri Apr 01 2022 00:00:00 GMT+0800 (中国标准时间)
-
-```
-
-### 获取某年某月的最后一天
-
-当你需要获取某年某月的最后一天
-
-```javascript
-const getLastDate = (d = new Date()) => new Date(d.getFullYear(), d.getMonth() + 1, 0);
-getLastDate(new Date('2023-03-04')) // Fri Mar 31 2023 00:00:00 GMT+0800 (中国标准时间)
-
-```
-
-### 获取某年月份天数
-
-当你需要获取某年某个月份的总天数
-
-```javascript
-const getDaysNum = (year, month) => new Date(year, month, 0).getDate()  
-const day = getDaysNum(2024, 2) // 29
-
 ```
 
 ## 数字
+
+### 进制转换
+
+将10进制转换成n进制，可以使用`toString(n)`
+
+```js
+const toDecimal = (num, n = 10) => num.toString(n) 
+// 假设数字10要转换成2进制
+toDecimal(10, 2) // '1010'
+```
+
+将n进制转换成10进制，可以使用`parseInt(num, n)`
+
+```js
+// 10的2进制为1010
+const toDecimalism = (num, n = 10) => parseInt(num, n)
+toDecimalism(1010, 2)
+```
+
+### 确认奇偶数
+
+```js
+const isEven = num => num % 2 === 0;
+
+console.log(isEven(2));
+// Result: True
+```
+
+### 求平均值
+
+使用 reduce 方法找到多个数字的平均值。
+
+```js
+const average = (...args) => args.reduce((a, b) => a + b) / args.length;
+
+average(1, 2, 3, 4);
+// Result: 2.5
+```
 
 ### 截断数字
 
@@ -662,6 +517,124 @@ replenishZero(8, 2) // 08
 
 ```
 
+## 字符串
+
+###  翻转字符串
+
+使用split,reverse和join方法轻松翻转字符串。
+
+```js
+const reverse = str => str.split('').reverse().join('');
+
+reverse('hello world');
+// Result: 'dlrow olleh'
+```
+
+## 正则
+
+### 手机号格式化
+
+当你需要将手机号码格式化成xxx-xxxx-xxxx的形式
+
+```js
+const formatPhone = (str, sign = '-') => str.replace(/(\W|\s)/g, "").split(/^(\d{3})(\d{4})(\d{4})$/).filter(item => item).join(sign)
+
+formatPhone('13123456789') // '131-2345-6789'
+formatPhone('13 1234 56 789', ' ') // '131 2345 6789'
+```
+
+### 去除多余空格
+
+当你需要将一段文本中的多个空格合并成一个空格
+
+```js
+const setTrimOut = str => str.replace(/\s\s+/g, ' ')
+const str = setTrimOut('hello,   jack') // 
+```
+
+## 日期时间
+
+### 判断日期是否为今天
+
+```javascript
+const isToday = (date) => date.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10)
+```
+
+### 从日期获取“时分秒”格式的时间
+
+我们可以从日期中，获取到 hh: mm: ss格式的时间：
+
+```js
+const timeFromDate = date => date.toTimeString().slice(0, 8);
+
+console.log(timeFromDate(new Date(2021, 0, 10, 17, 30, 0)));
+// Result: "17:30:00"
+```
+
+### 日期转换
+
+当你需要将日期转换为为 YYYY-MM-DD 格式
+
+```javascript
+const formatYmd = (date) => date.toISOString().slice(0, 10);
+formatYmd(new Date())
+```
+
+### 秒数转换
+
+当你需要将秒数转换为 hh\:mm\:ss 格式
+
+```javascript
+const formatSeconds = (s) => new Date(s * 1000).toISOString().substr(11, 8)
+formatSeconds(200) // 00:03:20
+```
+
+### 获取某年某月的*第一天*
+
+当你需要获取某年某月的第一天
+
+```javascript
+javascript复制代码const getFirstDate = (d = new Date()) => new Date(d.getFullYear(), d.getMonth(), 1);
+getFirstDate(new Date('2022-04')) // Fri Apr 01 2022 00:00:00 GMT+0800 (中国标准时间)
+```
+
+### 获取某年某月的*最后一天*
+
+当你需要获取某年某月的最后一天
+
+```javascript
+const getLastDate = (d = new Date()) => new Date(d.getFullYear(), d.getMonth() + 1, 0);
+getLastDate(new Date('2023-03-04')) // Fri Mar 31 2023 00:00:00 GMT+0800 (中国标准时间)
+```
+
+### 获取某年*月份天数*
+
+当你需要获取某年某个月份的总天数
+
+```javascript
+const getDaysNum = (year, month) => new Date(year, month, 0).getDate()  
+const day = getDaysNum(2024, 2) // 29
+```
+
+### 计算两个日期间*相差的天数*
+
+```js
+const dayDiff = (date1, date2) => Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / 86400000)
+
+dayDiff(new Date("2020-10-21"), new Date("2021-10-22"))
+// Result: 366
+```
+
+### 找出某一天所在一年中的第几天
+
+```js
+const dayOfYear = (date) =>
+Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+
+dayOfYear(new Date());
+// Result: 272
+```
+
 ## 对象
 
 ### 删除无效属性
@@ -669,10 +642,9 @@ replenishZero(8, 2) // 08
 当你需要删除一个对象中的属性值为null或undefined的所有属性
 
 ```javascript
-javascript复制代码const removeNullUndefined = (obj) => Object.entries(obj).reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {});
+const removeNullUndefined = (obj) => Object.entries(obj).reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {});
 
 removeNullUndefined({name: '', age: undefined, sex: null}) // { name: '' }
-
 ```
 
 ### 反转对象键值
@@ -682,7 +654,6 @@ removeNullUndefined({name: '', age: undefined, sex: null}) // { name: '' }
 ```javascript
 const invert = (obj) => Object.keys(obj).reduce((res, k) => Object.assign(res, { [obj[k]]: k }), {})
 invert({name: 'jack'}) // {jack: 'name'}
-
 ```
 
 ### 字符串转对象
@@ -693,14 +664,13 @@ invert({name: 'jack'}) // {jack: 'name'}
 const strParse = (str) => JSON.parse(str.replace(/(\w+)\s*:/g, (_, p1) => `"${p1}":`).replace(/\'/g, "\""))
 
 strParse('{name: "jack"}')
-
 ```
 
 ## 随机算法函数
 
 ### 随机数范围
 
-```js:no-line-numbers
+```js
 export const random = (min, max) => {
     if (arguments.length === 2) {
         return Math.floor(min + Math.random() * ((max + 1) - min))
@@ -714,8 +684,8 @@ export const random = (min, max) => {
 
 当你需要获取一个随机颜色
 
-```js:no-line-numbers
-const getRandomColor = () => `#${Math.floor(Math.random() * 0xffffff).toString(16)}`
+```js
+const getRandomColor = () => `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6,"0")}`
 getRandomColor() // '#4c2fd7'
 ```
 
@@ -723,7 +693,7 @@ getRandomColor() // '#4c2fd7'
 
 当你需要生成一个ip地址
 
-```js:no-line-numbers
+```js
 const randomIp = () =>
     Array(4)
         .fill(0)
@@ -731,7 +701,20 @@ const randomIp = () =>
         .join('.');
 ```
 
+### 洗牌算法随机
 
+```js
+export const shuffle = (arr) => {
+    var result = [],
+        random;
+    while (arr.length > 0) {
+        random = Math.floor(Math.random() * arr.length);
+        result.push(arr[random])
+        arr.splice(random, 1)
+    }
+    return result;
+}
+```
 
 ## 转换
 
@@ -741,10 +724,19 @@ const randomIp = () =>
 
 当你需要将16进制的颜色转换成rgb
 
-```js:no-line-numbers
+```js
 const hexToRgb = hex => hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (_, r, g, b) => `#${r}${r}${g}${g}${b}${b}`).substring(1).match(/.{2}/g).map((x) => parseInt(x, 16));
 hexToRgb('#00ffff'); // [0, 255, 255]
 hexToRgb('#0ff'); // [0, 255, 255]
+```
+
+#### RGB 转换为16进制
+
+```js
+const rgbToHex = (r, g, b) =>"#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+rgbToHex(0, 51, 255);
+// Result: #0033ff`
 ```
 
 ### 阿拉伯数字转中文大写数字
@@ -951,24 +943,29 @@ export const changeToChinese = (Num) => {
 
 ## 其他
 
-### 比较两个对象
+### 从 URL 获取查询参数
 
-当你需要比较两个对象，js的等于只能判断对象的地址是否相同，当地址不相同的时候无法判断两个对象的键值对是否一致。
+通过 window.location 或原始 URL 轻松查询 goole.com?search=easy&page=3 的参数
 
-```javascript
-php复制代码const isEqual = (...objects) => objects.every(obj => JSON.stringify(obj) === JSON.stringify(objects[0]))
-isEqual({name: 'jack'}, {name: 'jack'}) // true
-isEqual({name: 'jack'}, {name: 'jack1'}, {name: 'jack'}) // false
+```js
+const getParameters = (URL) => {
+URL = JSON.parse('{"' + decodeURI(URL.split("?")[1]).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') +'"}');
+return JSON.stringify(URL);
+};
+
+
+const query = new URLSearchParams(window.location.search)
+[...query.entries()]
+getParameters(window.location)
+// Result: { search : "easy", page : 3 }
 ```
 
-### uuid
+### 清除所有 Cookie
 
-当你需要生成一个id
+通过使用 document.cookie 可以轻松清除存储在网页中的所有 cookie 。
 
-```javascript
-const uuid = (a) => (a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid))
-uuid()
-
+```js
+const clearCookies = document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.\*/, `=;expires=${new Date(0).toUTCString()};path=/`));
 ```
 
 ### 获取cookie
@@ -981,7 +978,36 @@ const getCookie = () => document.cookie
     .map((item) => item.split('='))
     .reduce((acc, [k, v]) => (acc[k.trim().replace('"', '')] = v) && acc, {})
 getCookie()
+```
 
+### 获取cookie某个值
+
+使用 document.cookie 来获取 Cookie 的值
+
+```js
+const cookie = name => `; ${document.cookie}`.split(`; ${name}=`).pop().split(';').shift();
+
+cookie('_ga');
+// Result: "GA1.2.1929736587.1601974046"
+```
+
+### 比较两个对象
+
+当你需要比较两个对象，js的等于只能判断对象的地址是否相同，当地址不相同的时候无法判断两个对象的键值对是否一致。
+
+```javascript
+const isEqual = (...objects) => objects.every(obj => JSON.stringify(obj) === JSON.stringify(objects[0]))
+isEqual({name: 'jack'}, {name: 'jack'}) // true
+isEqual({name: 'jack'}, {name: 'jack1'}, {name: 'jack'}) // false
+```
+
+### uuid
+
+当你需要生成一个id
+
+```javascript
+const uuid = (a) => (a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid))
+uuid()
 ```
 
 ### 强制等待

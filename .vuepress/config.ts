@@ -1,6 +1,7 @@
 import { defineUserConfig } from "vuepress";
 import type { DefaultThemeOptions } from "vuepress";
 import recoTheme from "vuepress-theme-reco";
+import mdKatex from 'markdown-it-katex'
 
 export default defineUserConfig({
   title: "Ben's Blog",
@@ -8,6 +9,8 @@ export default defineUserConfig({
   head: [
     // 静态资源默认在.vuepress/public
     ['link', { rel: 'icon', href: '/logo.png' }],
+    ['link', { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css' }],
+    ['link', { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css" }]
   ],
   theme: recoTheme({
     password: '1b01dedededa32616ed25865c4adb837',
@@ -98,7 +101,7 @@ export default defineUserConfig({
       },
       {
         text: "归档",
-        link:"/timeline"
+        link:"/timeline/"
       }
       // { text: "Categories", link: "/categories/reco/1/" },
       // { text: "Tags", link: "/tags/tag1/1/" },
@@ -178,5 +181,9 @@ export default defineUserConfig({
     //   },
     // },
   }),
+  extendsMarkdown(md){
+    md.set({html:true})
+    md.use(mdKatex)
+  }
   // debug: true,
 });

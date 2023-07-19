@@ -1,6 +1,6 @@
 ---
-title: 一些判断工具函数
-date: 2023/07/19
+title: 判断工具函数
+date: 2023-07-19
 categories:
  - 工具集
 tags:
