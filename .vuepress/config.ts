@@ -13,12 +13,14 @@ export default defineUserConfig({
     password: '1b01dedededa32616ed25865c4adb837',
     style: "@vuepress-reco/style-default",
     logo: "/logo.png",
-    author: "ben chan",
-    authorAvatar: "/head.png",
-    docsRepo: "https://github.com/vuepress-reco/vuepress-theme-reco-next",
-    docsBranch: "main",
-    docsDir: "example",
-    lastUpdatedText: "",
+    author: "Ben Chan",
+    authorAvatar: "/avatar.jpg",
+    docsRepo: 'https://github.com/misterch/misterch.github.io',
+    docsBranch: 'main',
+    // docsDir: 'docs',
+    editLinkText:"编辑此页",
+    editLinkPattern: ':repo/blob/:branch/:path',
+    lastUpdatedText: "最近更新时间",
     // series 为原 sidebar
     series: {
       "/docs/javascript/": [
@@ -32,43 +34,71 @@ export default defineUserConfig({
           text: "组件",
           children: ["props","slot","event"],
         }
+      ],
+      "/docs/interview/javascript/":[
+        {
+          text:"javascript面试题",
+          children:["1","2"]
+        }
+      ],
+      "/docs/interview/":[
+        {
+          text:"typescript",
+          children:["面试题1"]
+        },
+        {
+          text:"vue",
+          children:["面试题1"]
+        },
+        {
+          text:"vite",
+          children:["面试题1"]
+        },
+        {
+          text:"webpack",
+          children:["面试题1"]
+        },
+        {
+          text:"node",
+          children:["面试题1"]
+        }
       ]
     },
     navbar: [
-      { text: "Home", link: "/" },
+      { text: "首页", link: "/" },
       {
-        text: "Javascript",
+        text: "分类",
+        link:"/categories/gongjuji/1/"
+      },
+      {
+        text: "标签",
+        link:"/tags/utils/1/"
+      },
+      {
+        text: "文档",
         children:[
-          {text:'基础原理',link:'/'},
-          {text:'实用的工具函数',link:'/'},
-        ],
-      },
-      {
-        text: "Typecript",
-        link: "/docs/theme-reco/theme"
-      },
-      {
-        text: "Vue3",
-        link: "/docs/vue3/props"
-      },
-      {
-        text: "Node",
-        children:[
-          {text:'原生',link:'/'},
-          {text:'Express',link:'/'},
-          {text:'Koa',link:'/'},
-        ]
-      },
-      {
-        text: "构建工具",
-        children:[
-          {text:'Webpack',link:'/'},
-          {text:'Vite',link:'/'},
+          {
+            text:"面试",
+            children:[
+              {
+                text:"javascript",
+                link:"/docs/interview/javascript/1"
+              },
+              {
+                text:"typescript",
+                link:"/docs/interview/typescript/1"
+              }
+            ]
+          }
         ]
       },
       {
         text:"博客",
         link: "/posts",
+      },
+      {
+        text: "归档",
+        link:"/timeline"
       }
       // { text: "Categories", link: "/categories/reco/1/" },
       // { text: "Tags", link: "/tags/tag1/1/" },
@@ -148,5 +178,5 @@ export default defineUserConfig({
     //   },
     // },
   }),
-  debug: true,
+  // debug: true,
 });
