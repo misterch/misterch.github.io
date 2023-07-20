@@ -38,6 +38,12 @@ export default defineUserConfig({
           children: ["props","slot","event"],
         }
       ],
+      "/docs/git/":[
+        {
+          text: "基础",
+          children: ["basic","clone","branch","merge","updatepublish","undo"]
+        }
+      ],
       "/docs/interview/javascript/":[
         {
           text:"javascript面试题",
