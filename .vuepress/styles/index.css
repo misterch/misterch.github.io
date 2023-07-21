@@ -1,0 +1,7 @@
+blockquote{
+  border-left-color:rgb(93 103 232 / var(--tw-border-opacity));
+  background-color: rgb(93 103 232 / 0.05) !important;
+  code{
+    background-color:rgb(93 103 232 / 0.2) !important
+  }
+}

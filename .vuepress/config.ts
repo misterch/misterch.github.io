@@ -41,7 +41,11 @@ export default defineUserConfig({
       "/docs/git/":[
         {
           text: "基础",
-          children: ["basic","clone","branch","merge","updatepublish","undo"]
+          children: ["basic","branch","merge","updatepublish","undo"]
+        },
+        {
+          text: "指令详情",
+          children:["clone","checkout"]
         }
       ],
       "/docs/interview/javascript/":[
@@ -86,6 +90,10 @@ export default defineUserConfig({
       {
         text: "文档",
         children:[
+          {
+            text: "Git",
+            link: "/docs/git/basic"
+          },
           {
             text:"面试",
             children:[
