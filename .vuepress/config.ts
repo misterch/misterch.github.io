@@ -45,7 +45,7 @@ export default defineUserConfig({
         },
         {
           text: "指令详情",
-          children:["clone","checkout"]
+          children:["clone","checkout","restore","stash","log","reflog"]
         }
       ],
       "/docs/interview/javascript/":[
@@ -116,6 +116,10 @@ export default defineUserConfig({
       {
         text: "归档",
         link:"/timeline/"
+      },
+      {
+        text: "Links",
+        link: "/blogs/other/somelink.md"
       }
       // { text: "Categories", link: "/categories/reco/1/" },
       // { text: "Tags", link: "/tags/tag1/1/" },
