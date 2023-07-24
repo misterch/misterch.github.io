@@ -22,6 +22,8 @@ git stash [save [<message>]]
 
 ```bash
 git statsh
+# 或者可以为暂存添加信息
+git statsh -m "message"
 ```
 
 成功保存后，使用`list`命令查看当前分支上所有被保存的更改
@@ -35,7 +37,7 @@ stash@{0}: WIP on master: b0027b0 add new function
 选择要恢复的更改，使用`apply`
 
 ```bash
-git stash apply stash@{0}
+git stash apply stash@{0} #使用第一个记录
 ```
 
 如果直接还原保存的更改并**合并到当前分支**中，使用`pop`
@@ -43,7 +45,9 @@ git stash apply stash@{0}
 恢复后，可以使用`drop`删除暂存
 
 ```bash
-git stash drop stash@{0}
+git stash drop stash@{0} #删除第一个记录
+
+git stash clear #删除所有暂存记录
 ```
 
 ### 暂存特定的变更

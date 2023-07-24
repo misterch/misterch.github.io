@@ -11,9 +11,12 @@ date: 2023-07-23
 
 [Anthony Fu (antfu.me)](https://antfu.me/)
 
-[ChokCoco - CSS动画](https://www.cnblogs.com/coco1s/) | [Chokcoco 的个人主页 - 动态 - 掘金 (juejin.cn)](https://juejin.cn/user/2330620350437678)
+[ChokCoco - CSS动画](https://www.cnblogs.com/coco1s/) | [Chokcoco 掘金 (juejin.cn)](https://juejin.cn/user/2330620350437678)
 
 [simple_lau](https://juejin.cn/user/3941121099310183)
+
+[码飞_CC](https://chen-cong.blog.csdn.net)
+[小满zs](https://xiaoman.blog.csdn.net)
 
 ## 文档
 
@@ -35,9 +38,13 @@ date: 2023-07-23
 
 [ES6 入门教程 - ECMAScript 6入门 (ruanyifeng.com)](https://es6.ruanyifeng.com/)
 
+[现代 JavaScript 教程](https://zh.javascript.info/)
+
 ### Vite
 
 ### Webpack
+
+[ webpack 优秀中文文章 ](https://github.com/webpack-china/awesome-webpack-cn)
 
 ### 正则
 
@@ -61,3 +68,7 @@ date: 2023-07-23
 
 [MDN Web Docs](https://developer.mozilla.org/zh-CN/)
 
+### Git
+[Git 教程 极客笔记](https://deepinout.com/git/git-tutorial/00_git_tutorial.html)
+[Git 易百教程](https://www.yiibai.com/git)
+[常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)

@@ -13,7 +13,7 @@ git 提交修改记录的工作原理
 
 ## reset回滚
 
-:::warn
+:::warning
 
 `reset`用于撤销**未被提交(push)到远程仓库**的改动(commit)
 

@@ -47,9 +47,9 @@ vite依赖预加载就是预先将被import的模块**复制**到一个模块中
 
 :::
 
-## Vite配置文件提示及开发环境
+## Vite配置文件及环境区分
 
-### 代码提示
+### 配置文件的代码提示
 
 ```js
 /*
@@ -72,7 +72,7 @@ export default UserConfig((config)=>{
 })
 ```
 
-### 开发环境配置
+### 环境配置
 
 根据开发环境和生产环境加载指定的配置文件
 
@@ -92,3 +92,97 @@ const envResolver = {
 }
 ```
 
+## 环境变量配置
+
+> 环境变量：根据当前代码环境产生值的变化的变量
+
+环境：
+
+* 开发环境
+* 测试环境
+* 预发布环境
+* 灰度环境
+* 生产环境
+
+:::tip
+
+`Vite`使用`dotenv`第三方库来读取`.env`开头的文件，解析文件中的环境变量，并将其注入到`process.env`对象中，但vite考虑到和其他配置的一些冲突（**root，envDir**），不会直接注入到`preocess.env`中
+
+使用vite内置的`loadEnv`方法来读取不同环境下加载相应的`.env`文件，返回环境变量对象
+
+:::
+
+:::tip
+
+Q：`vite.config.js`是在`node`环境中执行的，为什么可以以`esmodule`规范导入导出？
+
+A：vite在读取这个配置文件的时候会交给node去解析文件语法，将`esmodule`规范替换成`commonjs`规范
+
+:::
+
+```js
+//vite.config.js
+import {UserConfig,loadEnv} from 'vite'
+import base from "./vite.base.config.js"
+import dev from "./vite.dev.config.js"
+import prod from "./vite.prod.config.js"
+const envResolver = {
+  "build":()=>{
+    return {...base,...prod}
+  },
+  "serve":()=>{
+    return {...base,...dev}
+  }
+}
+export default UserConfig((config)=>{
+  if(config.command==='build'){
+    
+  }else if(config.command==='serve'){
+    const env = loadEnv(config.mode,process.cwd())
+  }
+  return envResolver[config.command]()
+})
+```
+
+`precess.cwd()`返回当前node进程的工作目录，在哪个目录下执行node就返回目录的地址
+
+`loadEnv(mode,envDir,prefixes)`
+
+* `mode`：根据执行`vite`命令传入给`--mode`选项的**参数值**
+* `envDir`：`.env`文件所在的目录
+
+* `prefixes`：默认`.env`
+
+```json
+"script":{
+  "dev":"vite", //默认vite --mode development
+  "test":"vite --mode test"
+  "build":"vite build --mode production"
+}
+```
+
+:::tip
+
+vite这样处理环境变量
+
+所有环境都用到的env文件：`.env`
+
+开发环境默认env文件：`.env.development`
+
+生产环境默认env文件：`.env.production`
+
+浏览器：`import.meta.env`获取环境变量
+
+node：`process.env`获取环境变量
+
+vite：loadEnv()根据环境加载环境变量再与`process.env`结合返回环境变量对象
+
+:::
+
+### 客户端环境
+
+vite会将环境变量注入到`import.meta.env`中
+
+但默认会对环境变量拦截，对以`VITE_`开头的环境变量才会最终加载到环境变量中
+
+如果想以自定义为其他名称，可以通过`envPrefix`来配置

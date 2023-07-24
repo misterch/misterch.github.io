@@ -53,6 +53,12 @@ git push --set-upstream origin main
 git remote -v
 ```
 
+### 显示某个远程仓库的信息
+
+```bash
+git remote show [remote]
+```
+
 
 
 ### 重命名远程仓库
