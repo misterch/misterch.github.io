@@ -8,8 +8,6 @@ categories:
  - vite
 ---
 
-## 
-
 ## Vite依赖预构建
 
 :::tip esmodule
@@ -284,9 +282,11 @@ css的modules配置最终交给PostCss modules处理
 配置css预处理器的全局参数
 
 ```js
-preprocessOptions:{
-  less:{},
-  scss:{}
+module.exports = {
+  preprocessOptions:{
+  	less:{},
+  	scss:{}
+	}
 }
 ```
 
@@ -324,8 +324,6 @@ module.exports = {
   --mainBgColor: #ececec
 }
 ```
-
- :::tip
 
 使用css变量需要考虑兼容性问题，使用`postcss`去做兼容处理，使用`postcss-preset-env`预设可以更加方便处理css代码
 
