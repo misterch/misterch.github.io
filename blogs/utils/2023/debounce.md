@@ -2,7 +2,7 @@
 title: 节流和防抖
 date: 2023-07-19
 categories:
-  - 工具函数
+ - 工具函数
 tags:
  - utils
 ---
