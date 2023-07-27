@@ -5,3 +5,7 @@ blockquote{
     background-color:rgb(93 103 232 / 0.2) !important
   }
 }
+code{
+  background-color:rgb(93 103 232 / 0.2) !important;
+  color: steelblue;
+}

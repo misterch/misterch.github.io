@@ -1,5 +1,5 @@
 ---
-title: Vite入门
+title: Vite指南
 date: 2023-07-23
 tags:
  - vite
@@ -32,19 +32,19 @@ import vue from "/node_modules/vue"
 
 ### 依赖预构建
 
-vite首先找到对应的依赖，然后调用**esbuild**将其他规范（CMD、UMD、CommonJS等）的代码转换成esbuild规范，然后放到node_modules/.vite/deps下，同时对esmodule规范的各个模块进行统一集成
+vite首先找到对应的依赖，然后调用**esbuild**将其他规范（`CMD`、`UMD`、`CommonJS`等）的代码转换成`esmodule`规范，然后放到`node_modules/.vite/deps`下，同时对esmodule规范的各个模块进行统一集成
 
 vite解决了3个问题：
 
-1. 各种规范的第三方包用**esbuild**统一为**esmodule规范**
+1. 各种规范的第三方包用**esbuild**统一为`esmodule`规范
 2. 对路径的处理上直接使用.vite/deps,不管依赖是在项目中还是在开发环境的用户根目录中，方便路径重写
-3. 解决网络多包传输的性能问题(这就是esmodule不支持从node_modules目录加载模块的原因)，vite会对esmodule的各个引用模块统一集成到一个或几个模块中，减少**http请求**
+3. 解决网络多包传输的性能问题(这就是esmodule不支持从`node_modules`目录加载模块的原因)，`vite`会对`esmodule`的各个引用模块统一集成到一个或几个模块中，**减少http请求**
 
 :::tip
 
 `import`会发起http请求
 
-vite依赖预加载就是预先将被import的模块**复制**到一个模块中，这样就能减少http请求
+vite依赖预加载就是预先将被`import`的模块**复制**到一个模块中，这样就能减少http请求
 
 :::
 
@@ -401,6 +401,8 @@ defineConfig({
 
 这样在文件中引入别的资源时可以使用别名代替`../../`
 
+[vite-aliases](https://github.com/Subwaytime/vite-aliases)插件可以自动生成别名
+
 ### 获取svg源码
 
 加载资源时可以在路径后面接收参数，参数告诉vite以什么格式返回文件内容
@@ -465,3 +467,138 @@ defineConfig({
   }
 })
 ```
+
+## vite插件原理
+
+> vite插件一般是一个**函数**，函数**返回一个配置对象**
+
+插件是在vite的生命周期的不同阶段做不同的事情
+
+插件是在vite执行配置文件之前去改写配置文件
+
+## vite独有钩子
+
+Vite 插件也可以提供钩子来服务于特定的 Vite 目标。这些钩子会被 Rollup 忽略。
+
+### config
+
+`config`返回一个配置对象
+
+插件的配置要与`vite.config.js`的其他配置结合产生最终的配置
+
+```js
+const plugin = ()=>{
+  return {
+    name:'插件名字',
+    config:(config,env)=>{
+      //config：vite的配置信息
+      //env：环境变量
+      return {
+        
+      }
+    }
+  }
+}
+```
+
+### transformIndexHtml
+
+类型：function | object
+
+转换`index.html`的专用钩子
+
+```js
+const htmlPlugin = (html,ctx)=>{
+  //ctx是当前整个请求的执行上下文
+}
+```
+
+### configureServer
+
+#### vite-plugin-mock
+
+简单的方式：直接写死一两个数据
+
+- 缺陷
+  - 无法做海量数据测试
+  - 无法获取一些标准数据
+  - 无法感知http的异常
+
+mockjs数据：模拟海量数据，模拟接口
+
+:::tip
+
+`vite-plugin-mock`是对请求进行拦截。
+
+在开发环境中，如果没有配置请求域名，一般请求会向本地开发服务器（即本地的vite开发服务器）发出请求，该插件相当于利用本地开发服务器模拟了接口，插件能根据配置对请求进行拦截处理，使用指定文件夹内设置的mock数据
+
+`vite-plugin-mock`是利用vite的`configureServer(server)`钩子开发的
+
+:::
+
+```js
+axios({
+	method:'post',
+  url: process.env.NODE_ENV === 'development' ? '/mock/getUser': 'https://www.myapi.com/api/getUser'
+})
+```
+
+[Mock.js (mockjs.com)](http://mockjs.com/)
+
+`vite-plugin-mock`的使用
+
+1. 安装`npm install -D vite-plugin-mock`
+
+2. 配置`vite.config.js`
+
+   ```js
+   //在vite.config.js配置该插件
+   module.exports = defineConfig({
+   	plugins:[
+   		vitePluginMock()
+   	]
+   })
+   ```
+
+   
+
+3. `vite-plugin-mock`默认会从项目根目录的`/mock`目录查找mock数据
+
+   这主要是在node环境下才会使用到的，所以一般要以`commonjs`规范书写
+
+   ```js
+   // /mock/index.js
+   import mockJS from 'mockjs'
+   const userList = mockJS.mock({
+     //生成100
+     "data|100":[{
+       name:"@cname",//随机中文名
+       "id|+1":1 //自增，每次+1
+     }]
+   })
+   module.exports = [
+     {
+       method:'post',
+       url:'/api/users',
+       response:({body})=>{
+         return {
+           code:200,
+           msg:"success",
+           data:[...userList]
+         }
+       }
+     }
+   ]
+   ```
+
+   
+
+4. 在项目中，开发环境下就可以按照正常的网络请求获取mock数据
+
+#### configResolved
+
+整个配置文件解析完后执行的钩子
+
+## 参考资料
+
+[Vite世界指南（带你从0到1深入学习 vite）](https://www.bilibili.com/video/BV1GN4y1M7P5)
