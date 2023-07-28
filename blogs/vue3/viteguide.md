@@ -704,7 +704,15 @@ export default defineConfig({
 
 ### 动态导入
 
+在ESM模式下，除了`import from`静态导入，还可以使用`import`动态导入方法（异步），这个方法返回一个`promise`对象
+
+动态导入原理：在代码中使用动态导入方法引入模块，但还没有使用该模块时，`promise`处于`pending`状态，一旦使用到该模块，就会执行`promise`的`resolve`方法去执行动态导入的逻辑；动态导入的逻辑基本实现是，创建`script`标签，`src`指向`import`方法的参数（即模块路径），再将`script`标签推到`body`标签中，`script`标签就会发起`http`请求文件，以达到动态导入，按需加载的效果
+
 ### cdn加速
+
+content delivery network，内容分发网络
+
+通过cdn，将我们依赖的第三方模块改成cdn引入，以保证我们的最终的打包代码最小体积，优化网络传输
 
 ## 参考资料
 
