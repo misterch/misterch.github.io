@@ -599,6 +599,113 @@ axios({
 
 整个配置文件解析完后执行的钩子
 
+## vite与ts的结合
+
+vite天生支持ts，但vite只是编译ts代码，并不会对ts代码进行类型检查
+
+如果需要对ts代码进行类型检查，只有通过类型检查才能执行编译
+
+`tsc --noEmit && vite build`
+
+想在浏览器端也呈现出警告信息，可以使用`vite-plugin-checker`
+
+```js
+//vite.config.ts
+//...
+plugins:[
+  checker({
+    typescript: true
+  })
+]
+```
+
+```js
+//tsconfig.ts
+{
+  "compilerOptions":{
+    "skipLibCheck": true //跳过对node_modules目录的检查
+  }
+}
+```
+
+### 为vite环境变量配置声明文件
+
+扩展`import.meta.env`的声明，为自定义的环境变量提供代码提示
+
+```ts
+//vite-env.d.ts
+///<reference type="vite/client">
+interface ImportMetaEnv {
+  readonly VITE_PROXY_TARGER:string
+}
+```
+
+## vite性能优化
+
+性能优化，优化的是什么？
+
+1. 开发时态的构建速度优化
+   - vite是按需加载，这样面不用太在意
+2. 页面性能指标
+   - 首屏渲染：FCP（First Content Paint）
+     - 懒加载
+     - http优化：强缓存，协商缓存
+   - 页面中最大元素的时长：LCP（Largest Content Paint）
+3. js逻辑优化
+   - 注意副作用的清除（setTimeout,setInterval,事件监听）
+   - 使用requestAnimationFrame，requestIdleCallback
+     - 浏览器的帧率以16.6ms更新页面（执行js逻辑，重排重绘等）
+   - 使用lodash提供的高性能的工具库（防抖，节流，循环）
+   - 对作用域的控制
+4. 构建优化vite(rollup) webpack
+   - 优化体积：压缩，treeshaking，图片资源压缩，cdn加载，分包
+
+### 分包策略
+
+将不会常规更新的代码（依赖）单独打包处理，在修改业务代码时不会浪费性能重复对不会改变的代码打包
+
+```js
+export default defineConfig({
+  build:{
+    rollupOptions:{
+      output:{
+        manualChunks:(id)=>{
+          //id是文件路径
+          //将依赖包打包到vendor文件
+          if(id.includes('node_modules')){
+            return "vendor"
+          }
+        }
+      }
+    }
+  }
+})
+```
+
+
+
+### gzip压缩
+
+文件资源体积很大，会加大在网络传输时的压力，降低性能
+
+但客户端需要解压文件，也需要耗时耗性能，需要斟酌使用gzip
+
+将资源文件在服务端进行压缩，减少体积，再将压缩包通过http传输到客户端，客户端接收到后解压
+
+使用`vite-plugin-compression`vite插件来对打包的代码压缩
+
+```js
+export default defineConfig({
+  plugins:[vitePluginCompression()]
+})
+```
+
+打包后将会有一个`.gz`后缀的文件，在服务端要使用`.gz`文件传输给客户端，设置`content-encoding:gzip`，客户端接收到响应头的`content-encoding`是`gzip`类型就会解压的得到源文件
+
+### 动态导入
+
+### cdn加速
+
 ## 参考资料
 
 [Vite世界指南（带你从0到1深入学习 vite）](https://www.bilibili.com/video/BV1GN4y1M7P5)
