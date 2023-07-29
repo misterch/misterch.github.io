@@ -6,7 +6,7 @@ categories:
 tags:
  - 原理
  - prototype
- - constructor
+ - 构造函数
 ---
 
 ![](https://img-blog.csdnimg.cn/20190311194017886.png)
