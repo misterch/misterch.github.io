@@ -7,6 +7,7 @@ tags:
  - 原理
  - prototype
  - 构造函数
+ - 面试
 ---
 
 ![](https://img-blog.csdnimg.cn/20190311194017886.png)

@@ -714,6 +714,8 @@ content delivery network，内容分发网络
 
 通过cdn，将我们依赖的第三方模块改成cdn引入，以保证我们的最终的打包代码最小体积，优化网络传输
 
+`vite-plugin-cdn-import`插件可以配置打包后第三方依赖通过cdn形式载入
+
 ## 参考资料
 
 [Vite世界指南（带你从0到1深入学习 vite）](https://www.bilibili.com/video/BV1GN4y1M7P5)
