@@ -7,6 +7,7 @@ tags:
  - 原理
  - prototype
  - 构造函数
+categories:
  - 面试
 ---
 
