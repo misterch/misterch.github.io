@@ -6,6 +6,7 @@ tags:
  - 异步
 categories: 
  - 面试
+ - javascript
 ---
 
 ## Javascript执行机制

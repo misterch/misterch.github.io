@@ -1,8 +1,9 @@
 ---
 title: CommonJS规范的原理
 date: 2023-07-26
-tags:
+categories:
  - node
+tags:
  - 原理
  - commonjs
 ---

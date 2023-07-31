@@ -1,8 +1,12 @@
 ---
 title: Nginx可以做的事情
 date: 2023-07-29
-tags:
+categories:
  - nginx
+tags:
+ - 反向代理
+ - 虚拟主机
+ - 负载均衡
 ---
 
 ## 配置文件解析

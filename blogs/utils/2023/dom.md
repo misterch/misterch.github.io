@@ -2,9 +2,9 @@
 title: DOM工具函数
 date: 2023-07-19
 categories:
- - 工具集
+ - 工具函数
 tags:
- - utils
+ - DOM
 ---
 
 ### 动态引入js

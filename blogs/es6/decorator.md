@@ -1,11 +1,11 @@
 ---
 title: 装饰器
 date: 2023-07-23
-categories: 
+categories:
  - 面试
+ - ECMA
 tags:
  - 装饰器
- - ES6
 ---
 :::warning
 是一项实验性特性，未来版本可能会发生改变

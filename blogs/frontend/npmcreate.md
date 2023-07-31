@@ -1,9 +1,10 @@
 ---
 title: npm create发生了什么？
 date: 2023-07-25
+categories:
+ - vite
 tags:
  - npm
- - vite
 ---
 > 现在许多框架和库都会有相应的脚手架工具，用于初始化项目，例如create-vite,create-vue,create-react-app等等
 

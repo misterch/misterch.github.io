@@ -5,8 +5,7 @@ categories:
  - css
  - sass
 tags:
- - sass
- - bem
+ - BEM
 ---
 
 > B:block

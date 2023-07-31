@@ -87,7 +87,7 @@ export default defineUserConfig({
       { text: "首页", link: "/" },
       {
         text: "分类",
-        link:"/categories/gongjuji/1/"
+        link:"/categories/javascript/1/"
       },
       {
         text: "标签",

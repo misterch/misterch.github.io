@@ -1,16 +1,16 @@
 ---
-title: javascript面试题1
+title: 数组去重的几种方法
 date: 2023/07/19
 categories:
  - 面试
 tags:
- - 面试
+ - 去重
 ---
 ## 数组去重的几种方法
 
 ### 利用 Set 去重
 
-```
+```js
 /* 
   1.返回值是一个去重的数组 
   2.注意 Number 和 String 类型

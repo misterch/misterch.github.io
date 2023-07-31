@@ -1,6 +1,8 @@
 ---
 title: '位运算'
 date: 2023-07-21
+categories:
+ - 计算机基础
 tag: 
  - 位运算
 ---

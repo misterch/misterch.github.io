@@ -1,8 +1,9 @@
 ---
 title: 使用canvas压缩图片
 date: 2023-07-19
+categories:
+ - 工具函数
 tags:
- - utils
  - 图片压缩
  - canvas
  - FileReader

@@ -1,10 +1,11 @@
 ---
 title: SSH生成RSA密钥对
 date: 2023-07-31
+catogories:
+ - linux
 tags:
  - ssh
  - rsa
-
 ---
 ## SSH配置
 

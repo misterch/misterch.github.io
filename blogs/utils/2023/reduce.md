@@ -2,9 +2,7 @@
 title: reduce使用
 date: 2023-07-19
 categories:
- - 工具集
-tags:
- - utils
+ - 工具函数
 ---
 
 reduce方法可对数组中每个元素执行一个由开发者提供的reduce函数，将其汇总为**单个返回值**。循环能做的reduce都可做。
