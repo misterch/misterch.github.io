@@ -1,8 +1,8 @@
 ---
 title: class类的静态属性和实例属性
 date: 2023-07-23
-categories:
- - ES6
+categories: 
+ - 面试
 tags:
  - ES6
  - class
@@ -86,4 +86,3 @@ Person.prototype.protoFn1 = function(){
 	console.log(this.name,this.eyes)
 }
 ```
-

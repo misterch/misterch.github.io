@@ -38,6 +38,12 @@ export default defineUserConfig({
           children: ["props","slot","event"],
         }
       ],
+      "/docs/node/":[
+        {
+          text: "基础理论",
+          children:["1.md","2.md","3.md","4.md","5.md","6.md"]
+        }
+      ],
       "/docs/git/":[
         {
           text: "基础",
@@ -90,6 +96,10 @@ export default defineUserConfig({
       {
         text: "文档",
         children:[
+          {
+            text: "Node",
+            link: "/docs/node/1.md"
+          },
           {
             text: "Git",
             link: "/docs/git/basic"

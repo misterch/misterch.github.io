@@ -1,13 +1,12 @@
 ---
 title: 装饰器
 date: 2023-07-23
-categories:
- - ES6
+categories: 
+ - 面试
 tags:
  - 装饰器
  - ES6
 ---
-
 :::warning
 是一项实验性特性，未来版本可能会发生改变
 
@@ -15,7 +14,7 @@ typescript中需要开启才能使用
 
 装饰器只能用在类及类的属性和方法上，是与类相关的语法
 
-Typescript使用装饰器需要开启`experimentalDecoration: true`
+Typescript使用装饰器需要开启 `experimentalDecoration: true`
 :::
 
 ## 装饰器类型
@@ -38,7 +37,7 @@ const Base:ClassDecorator = (target) => {
 //相当于Base(A)
 @Base
 class A {
-	
+
 } 
 ```
 
@@ -63,7 +62,7 @@ const Base = (name:string) => {
 //相当于Base(A)
 @Base('ben')
 class A {
-	
+
 } 
 ```
 
@@ -71,9 +70,9 @@ class A {
 
 方法装饰器有三个参数
 
-1.  对于静态成员就是类的构造函数，对于实例对象就是类的原型对象
-2.  成员的名字
-3.  成员的属性描述符，value就是目对象的内容
+1. 对于静态成员就是类的构造函数，对于实例对象就是类的原型对象
+2. 成员的名字
+3. 成员的属性描述符，value就是目对象的内容
 
 可以修改类的方法
 
@@ -94,5 +93,7 @@ class Http {
 	}
 }
 ```
+
 ### 属性装饰器
+
 ### 参数装饰器
