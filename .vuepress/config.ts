@@ -91,7 +91,7 @@ export default defineUserConfig({
       },
       {
         text: "标签",
-        link:"/tags/utils/1/"
+        link:"/tags/zishiyingbuju/1/"
       },
       {
         text: "文档",
