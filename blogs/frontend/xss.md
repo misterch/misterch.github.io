@@ -3,6 +3,7 @@ title: XSS攻击原理及防御方法
 date: 2023-08-02
 tags:
  - 安全
+ - 面试
 ---
 ## XSS概念
 
@@ -122,7 +123,6 @@ DOM可以允许程序动态的访问和更新文档的内容、结构等。客�
 * 避免拼接html
 * 避免内联事件。如 `<button onclick="load('{{ data }}')">点</button>`
 
-
 ### 输入检查
 
 输入检查，服务端和客户端都要做
@@ -205,7 +205,7 @@ var JavaScriptEncode = function(str){
         var a2 = c%16;
         c = Math.floor(c/16);
         var a1 = c%16;
-        return "\\u"+hex[a1]+hex[a2]+hex[a3]+hex[a4]+"";    
+        return "\\u"+hex[a1]+hex[a2]+hex[a3]+hex[a4]+"";  
       }
       else {
         return changeTo16Hex(original);
@@ -325,7 +325,7 @@ var HtmlEncode = function(str){
         var a2=c%16;
         c=Math.floor(c/16);
         var a1=c%16;
-        return "&#x"+hex[a1]+hex[a2]+hex[a3]+hex[a4]+";";    
+        return "&#x"+hex[a1]+hex[a2]+hex[a3]+hex[a4]+";";  
       }
       else{
         return original;
