@@ -1,5 +1,4 @@
 import { defineUserConfig } from "vuepress";
-import type { DefaultThemeOptions } from "vuepress";
 import recoTheme from "vuepress-theme-reco";
 import mdKatex from 'markdown-it-katex'
 
