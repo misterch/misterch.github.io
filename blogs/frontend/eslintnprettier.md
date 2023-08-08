@@ -1,6 +1,6 @@
 ---
 title: 在前端项目中配置ESLint和Prettier规范代码，并配置vscode自动修复
-date: 2023-07-27
+date: 2023-08-08
 tags:
  - eslint
  - prettier
@@ -16,6 +16,63 @@ tags:
 - 代码检查检查代码中存在的错误，如**未声明变量**、**声明但未使用变量**、**修改const变量**
 - 代码格式化
   统一代码风格，如不加分号、字符串使用单引号、使用tab或者空格等
+
+### ESLint中的核心概念
+
+#### parser
+
+将代码转换为 eslint 能理解的 AST 语法树。
+
+parser是解析器，其功能对应编译原理中的词法分析、语法分析。
+
+#### parserOptions
+
+#### plugins
+
+eslint本身有些规则，但无法包含所有规则，因此eslint支持自定义规则，针对某种语法自定义的那些规则称之为eslint插件
+
+注意！！！`plugins`提供了检查和修复能力，但只是加载了插件，引入了额外自定义的 `rules`，但并没有将这些规则应用上，需要配置 `extends`或者 `rules`才能够应用规则
+
+一般插件命名为：`eslint-plugin-xxx`
+
+在配置插件时，一般会省略eslint-plugin，如 `eslint-plugin-vue`，配置时只需写vue就可
+
+#### extends
+
+extends可以看成是一个个配置方案的最佳实践，里面是别人配置好了的eslint规则配置
+
+如果规则冲突，位置靠后的覆盖前面的
+
+一般命名为： `eslint-config-`开头
+
+配置 `extends`时，可以省略 `eslint-config-`，如果是插件中的config，则写成 `plugin:plugin-name/config-name`
+
+#### overrides
+
+若要对某些文件进行更细致的定制化，则在 `overrides`字段中进行配置
+
+```js
+{
+  // ...
+  overrides: [
+    {
+      files: ["*.js","*.spec.js"],
+      excludeFiles: ['*.test.js']
+      rules: {
+        "no-unused-expressions": "off"
+      }
+    }
+  ]
+}
+```
+
+#### root
+
+设置配置文件的目录
+
+设置为false或没有配置时，会一直寻找 `.eslintrc.*`和 `package.json`，直到文件系统的根目录
+
+为true时，则停止在父级目录中寻找
 
 ### 项目中配置 `.eslintrc.js`
 
@@ -58,6 +115,46 @@ module.export = {
     // eslint-plugin-vue
   }
 }
+```
+
+:::tip
+
+Q：parser和parserOptions.parser指定解析器的区别
+
+A：`parser`默认解析器是 `espree`，这里指定 `vue-eslint-parser`作为**主要解析器** ，它将处理 `.vue`文件，尤其是 `<template>`标签
+
+parserOptions是传给vue-eslint-parser的参数
+
+这个解析器的自定义选项（parserOptions）指定使用 `@typescript-eslint/parser`解析器对 `.vue`文件中的 `<script>`标记进行 lint
+
+:::
+
+parserOptions.parser可以指定为一个对象
+
+```json
+
+"parser": "vue-eslint-parser",
+
+"parserOptions": {
+
+  "parser":{
+
+     // Script parser for `<script>`
+
+    "js":"espree",
+
+    // Script parser for `<script lang="ts">`
+
+    "ts":"@typescript-eslint/parser",
+
+    //解析模板中的vue语法（指令，mustache）
+
+    "<template>": "espree",
+
+  }
+
+}
+
 ```
 
 ### 在vscode中开启ESLint检测和修复问题代码
@@ -365,3 +462,11 @@ module.export = {
   }
 }
 ```
+
+## 参考链接
+
+[通关前端工程化（一）ESLint全方位解析，让你不再面向搜索引擎配置 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/554396222)
+
+[vue-eslint-parser: 用于 .vue文件的ESLint自定义解析器。 - 我爱学习网 (5axxw.com)](https://www.5axxw.com/wiki/content/pu4u1a)
+
+[Eslint 核心概念 &amp; 自定义 plugin 开发 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/486351487)

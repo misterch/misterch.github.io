@@ -84,32 +84,6 @@ module.exports = {
 }
 ```
 
-:::tip
-
-Q：parser和parserOptions.parser指定解析器的区别
-
-A：`parser`默认解析器是 `espree`，这里指定 `vue-eslint-parser`作为**主要解析器** ，它将处理 `.vue`文件，尤其是 `<template>`标签
-
-这个解析器的自定义选项（parserOptions）指定使用 `@typescript-eslint/parser`解析器对 `.vue`文件中的 `<script>`标记进行 lint
-
-:::
-
-parserOptions.parser可以指定为一个对象
-
-```json
-"parser": "vue-eslint-parser",
-"parserOptions": {
-  "parser":{
-     // Script parser for `<script>`
-    "js":"espree",
-    // Script parser for `<script lang="ts">`
-    "ts":"@typescript-eslint/parser",
-    //解析模板中的vue语法（指令，mustache）
-    "<template>": "espree",
-  }
-}
-```
-
 ### 配置package.json
 
 ```json
@@ -251,6 +225,8 @@ module.exports = {
 
 ## commitlint配置
 
+可以对commit信息进行检查是否符合规范
+
 ```bash
 pnpm add @commitlint/config-conventional @commitlint/cli -D
 ```
@@ -310,7 +286,7 @@ module.exports = {
 
 安装 `pnpm add commitizen -D`
 
-使用`commitizen`安装`cz-conventional-changelog`，并且初始化`cz-conventional-changelog`
+使用 `commitizen`安装 `cz-conventional-changelog`，并且初始化 `cz-conventional-changelog`
 
 ```bash
 pnpx commitizen init cz-conventional-changelog --pnpm --save-dev --save-exact
@@ -373,5 +349,3 @@ pnpm run commitlint
 ## 参考链接
 
 [尚硅谷Vue项目实战硅谷甄选，vue3项目+TypeScript前端项目一套通关](https://www.bilibili.com/video/BV1Xh411V7b5)
-
-[vue-eslint-parser: 用于 .vue文件的ESLint自定义解析器。 - 我爱学习网 (5axxw.com)](https://www.5axxw.com/wiki/content/pu4u1a)
