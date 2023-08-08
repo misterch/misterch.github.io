@@ -95,6 +95,21 @@ npx eslint --init
 }
 ```
 
+在vue项目中出现 `.html`文件出现错误 `vue/comment-directive`，原因是eslint-plugin-vue仅能linting `.vue`而不能linting `.html`
+
+这里通过配置使用vue处理器对.html文件进行检查
+
+或者关闭这个报错误的规则
+
+```js
+overrides: [
+    {
+      files: ['*.html'],
+      processor: 'vue/.vue',
+    },
+  ], 
+```
+
 ## Prettier
 
 ### Prettier作用
@@ -137,7 +152,7 @@ module.exports = {
 }
 ```
 
-在项目根目录下创建`.prettierrc.json`自定义检查规则
+在项目根目录下创建 `.prettierrc.json`自定义检查规则
 
 ```json
 {
@@ -147,7 +162,18 @@ module.exports = {
   "htmlWhitespaceSensitivity": "ignore",
   "endOfLine": "auto",
   "trailingComma": "all",
-  "tabWidth": 2
+  "tabWidth": 2,
+  // 解决<!doctype html>报错
+  "overrides": [
+    {
+      "files": [
+        "*.html"
+      ],
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
 }
 ```
 
@@ -274,7 +300,6 @@ ESLint和Prettier都可以对代码进行格式化
 ```
 
 因为在.eslintrc配置文件中已经配置使用prettier的格式化规则来linting代码，所以其实仍然使用的prettier来格式化代码，但也使用eslint来检查代码质量
-
 
 ## 完整的.eslintrc配置
 
