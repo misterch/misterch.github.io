@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "vuepress dev .",
     "start": "vuepress dev .",
-    "build": "vuepress build ."
+    "build": "vuepress build .",
+    "predev": "echo predev run",
+    "preinstall": "echo preinstall run"
   },
   "dependencies": {
     "markdown-it-katex": "^2.0.3",

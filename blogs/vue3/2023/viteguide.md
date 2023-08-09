@@ -6,20 +6,19 @@ tags:
 categories:
  - vite
 ---
-
 ## Vite依赖预构建
 
 :::tip esmodule
 
-直接使用`esmodule`，即`<script type="module"></script>`处理模块化资源加载的时候，路径要么是**绝对路径**要么是**相对路径**
+直接使用 `esmodule`，即 `<script type="module"></script>`处理模块化资源加载的时候，路径要么是**绝对路径**要么是**相对路径**
 
-Q：为什么`esmodule`对于导入**非绝对路径和相对路径**的资源时不搜寻`node_modules`?
+Q：为什么 `esmodule`对于导入**非绝对路径和相对路径**的资源时不搜寻 `node_modules`?
 
 A：因为如果当这个模块里面引用了其他模块，其他模块又引用了其他模块，这会导致过多的**http请求**
 
 :::
 
-使用`vite`加载模块时，遇到有**非绝对路径和相对路径**的引用，会尝试路径补全
+使用 `vite`加载模块时，遇到有**非绝对路径和相对路径**的引用，会尝试路径补全
 
 ```js
 import vue from "vue"
@@ -31,19 +30,19 @@ import vue from "/node_modules/vue"
 
 ### 依赖预构建
 
-vite首先找到对应的依赖，然后调用**esbuild**将其他规范（`CMD`、`UMD`、`CommonJS`等）的代码转换成`esmodule`规范，然后放到`node_modules/.vite/deps`下，同时对esmodule规范的各个模块进行统一集成
+vite首先找到对应的依赖，然后调用**esbuild**将其他规范（`CMD`、`UMD`、`CommonJS`等）的代码转换成 `esmodule`规范，然后放到 `node_modules/.vite/deps`下，同时对esmodule规范的各个模块进行统一集成
 
 vite解决了3个问题：
 
-1. 各种规范的第三方包用**esbuild**统一为`esmodule`规范
+1. 各种规范的第三方包用**esbuild**统一为 `esmodule`规范
 2. 对路径的处理上直接使用.vite/deps,不管依赖是在项目中还是在开发环境的用户根目录中，方便路径重写
-3. 解决网络多包传输的性能问题(这就是esmodule不支持从`node_modules`目录加载模块的原因)，`vite`会对`esmodule`的各个引用模块统一集成到一个或几个模块中，**减少http请求**
+3. 解决网络多包传输的性能问题(这就是esmodule不支持从 `node_modules`目录加载模块的原因)，`vite`会对 `esmodule`的各个引用模块统一集成到一个或几个模块中，**减少http请求**
 
 :::tip
 
 `import`会发起http请求
 
-vite依赖预加载就是预先将被`import`的模块**复制**到一个模块中，这样就能减少http请求
+vite依赖预加载就是预先将被 `import`的模块**复制**到一个模块中，这样就能减少http请求
 
 :::
 
@@ -65,9 +64,9 @@ export default UserConfig({})
 //传入一个函数
 export default UserConfig((config)=>{
   if(config.command==='build'){
-    
+  
   }else if(config.command==='serve'){
-    
+  
   }
 })
 ```
@@ -106,17 +105,17 @@ const envResolver = {
 
 :::tip
 
-`Vite`使用`dotenv`第三方库来读取`.env`开头的文件，解析文件中的环境变量，并将其注入到`process.env`对象中，但vite考虑到和其他配置的一些冲突（**root，envDir**），不会直接注入到`preocess.env`中
+`Vite`使用 `dotenv`第三方库来读取 `.env`开头的文件，解析文件中的环境变量，并将其注入到 `process.env`对象中，但vite考虑到和其他配置的一些冲突（**root，envDir**），不会直接注入到 `preocess.env`中
 
-使用vite内置的`loadEnv`方法来读取不同环境下加载相应的`.env`文件，返回环境变量对象
+使用vite内置的 `loadEnv`方法来读取不同环境下加载相应的 `.env`文件，返回环境变量对象
 
 :::
 
 :::tip
 
-Q：`vite.config.js`是在`node`环境中执行的，为什么可以以`esmodule`规范导入导出？
+Q：`vite.config.js`是在 `node`环境中执行的，为什么可以以 `esmodule`规范导入导出？
 
-A：vite在读取这个配置文件的时候会交给node去解析文件语法，将`esmodule`规范替换成`commonjs`规范
+A：vite在读取这个配置文件的时候会交给node去解析文件语法，将 `esmodule`规范替换成 `commonjs`规范
 
 :::
 
@@ -136,7 +135,7 @@ const envResolver = {
 }
 export default UserConfig((config)=>{
   if(config.command==='build'){
-    
+  
   }else if(config.command==='serve'){
     const env = loadEnv(config.mode,process.cwd())
   }
@@ -148,10 +147,9 @@ export default UserConfig((config)=>{
 
 `loadEnv(mode,envDir,prefixes)`
 
-* `mode`：根据执行`vite`命令传入给`--mode`选项的**参数值**
+* `mode`：根据执行 `vite`命令传入给 `--mode`选项的**参数值**
 * `envDir`：`.env`文件所在的目录
-
-* `prefixes`：默认`.env`
+* `prefixes`：默认 `.env`
 
 ```json
 "script":{
@@ -175,17 +173,17 @@ vite这样处理环境变量
 
 node：`process.env`获取环境变量
 
-vite：loadEnv()根据环境加载环境变量再与`process.env`结合返回环境变量对象
+vite：loadEnv()根据环境加载环境变量再与 `process.env`结合返回环境变量对象
 
 :::
 
 ### 客户端环境
 
-vite会将环境变量注入到`import.meta.env`中
+vite会将环境变量注入到 `import.meta.env`中
 
-但默认会对环境变量拦截，对以`VITE_`开头的环境变量才会最终加载到环境变量中
+但默认会对环境变量拦截，对以 `VITE_`开头的环境变量才会最终加载到环境变量中
 
-如果想以自定义为其他名称，可以通过`envPrefix`来配置
+如果想以自定义为其他名称，可以通过 `envPrefix`来配置
 
 ## vite开发服务器原理分析
 
@@ -195,9 +193,9 @@ vite会将环境变量注入到`import.meta.env`中
 
 :::tip
 
-设置`Content-Type:application/javascript`，让浏览器以解析js文件一样解析vue文件
+设置 `Content-Type:application/javascript`，让浏览器以解析js文件一样解析vue文件
 
-vite通过插件`@vitejs/plugin-vue`处理`.vue`文件，将vue模板中的template，script，style抽取出来分别处理
+vite通过插件 `@vitejs/plugin-vue`处理 `.vue`文件，将vue模板中的template，script，style抽取出来分别处理
 
 最终将处理好的js代码覆盖掉vue文件中的vue模板内容，然后让浏览器以js形式解析vue文件
 
@@ -209,17 +207,17 @@ vite天生支持css文件处理
 
 处理流程：
 
-1. vite读取到js文件引入的css文件或者vue文件中`<style>`标签内的内容
-2. 创建`style`标签，将css文件或vue文件的`<style>`标签的内容复制到创建的style标签里
-3. 将style标签插入到`index.html`的`head`中
+1. vite读取到js文件引入的css文件或者vue文件中 `<style>`标签内的内容
+2. 创建 `style`标签，将css文件或vue文件的 `<style>`标签的内容复制到创建的style标签里
+3. 将style标签插入到 `index.html`的 `head`中
 4. 将vite读取到的css内容替换成js脚本，方便HMR（热更新）或者css模块化
-5. vite服务器将.css文件也设置成`Content-Type:application/javascript`，让浏览器以js形式解析css文件
+5. vite服务器将.css文件也设置成 `Content-Type:application/javascript`，让浏览器以js形式解析css文件
 
 #### css模块化
 
 可以在js文件或者vue文件中以模块化对象形式使用模块化的css
 
-vite约定`css/less/scss`文件以`xxx.module.css`形式命名来开启css模块化
+vite约定 `css/less/scss`文件以 `xxx.module.css`形式命名来开启css模块化
 
 模块化处理流程：
 
@@ -274,7 +272,7 @@ css的modules配置最终交给PostCss modules处理
 
 `globalModulesPaths:string[]`
 
-命名为`xxx.modules.css`的文件不参与模块化
+命名为 `xxx.modules.css`的文件不参与模块化
 
 ## css配置（preprocessOptions）
 
@@ -302,7 +300,7 @@ postcss的插件
 vite会从两个地方寻找postcss配置
 
 - `vite.config.js`的css.postcss
-- 项目根目录下的`postcss.config.js`
+- 项目根目录下的 `postcss.config.js`
 
 ```js
 //postcss.config.js
@@ -324,7 +322,7 @@ module.exports = {
 }
 ```
 
-使用css变量需要考虑兼容性问题，使用`postcss`去做兼容处理，使用`postcss-preset-env`预设可以更加方便处理css代码
+使用css变量需要考虑兼容性问题，使用 `postcss`去做兼容处理，使用 `postcss-preset-env`预设可以更加方便处理css代码
 
 当把这个全局css变量文件在项目中全局引入使用
 
@@ -354,7 +352,7 @@ test{
 
 #### 解决方法
 
-使用`postcss-preset-env`插件配置`importFrom`告诉postcss全局变量需要
+使用 `postcss-preset-env`插件配置 `importFrom`告诉postcss全局变量需要
 
 ```js
 const postcssPresetEnv = require('postcss-preset-env')
@@ -375,8 +373,7 @@ module.exports = {
 
 **注意：**
 
-1. 如果css变量定义在当前文件中，并在当前文件中使用时，是不需要配置`importFrom`的
-
+1. 如果css变量定义在当前文件中，并在当前文件中使用时，是不需要配置 `importFrom`的
 2. 如果css变量文件有多个，`importFrom`支持数组形式
 
 ## 静态资源
@@ -398,7 +395,7 @@ defineConfig({
 })
 ```
 
-这样在文件中引入别的资源时可以使用别名代替`../../`
+这样在文件中引入别的资源时可以使用别名代替 `../../`
 
 [vite-aliases](https://github.com/Subwaytime/vite-aliases)插件可以自动生成别名
 
@@ -411,7 +408,7 @@ defineConfig({
 - url，默认
 - raw，返回文件内的源码
 
-通过`raw`方式获取svg源码内容，就可以操作`svg`，例如可以修改svg的颜色
+通过 `raw`方式获取svg源码内容，就可以操作 `svg`，例如可以修改svg的颜色
 
 ```js
 import logo from './logo.svg?raw'
@@ -424,7 +421,7 @@ document.body.appendChild(logo)
 
 ### base
 
-开发或生产环境服务的公共基础路径，默认`/`，配置成绝对路径后，无论在哪里都能正常访问资源
+开发或生产环境服务的公共基础路径，默认 `/`，配置成绝对路径后，无论在哪里都能正常访问资源
 
 指定了公共路径，所有资源的路径都会根据此配置重写
 
@@ -444,7 +441,7 @@ vite打包后的每个资源文件都会加上一个hash值，这个hash值是�
 
 hash是根据文件名和文件内容计算出来的，只要文件内容没有变化，hash就不会变化
 
-打包生成的文件名可以通过`build.rollupOptions.output.assetFileNames`来配置
+打包生成的文件名可以通过 `build.rollupOptions.output.assetFileNames`来配置
 
 ### 处理成base64
 
@@ -483,7 +480,7 @@ Vite 插件也可以提供钩子来服务于特定的 Vite 目标。这些钩子
 
 `config`返回一个配置对象
 
-插件的配置要与`vite.config.js`的其他配置结合产生最终的配置
+插件的配置要与 `vite.config.js`的其他配置结合产生最终的配置
 
 ```js
 const plugin = ()=>{
@@ -493,7 +490,7 @@ const plugin = ()=>{
       //config：vite的配置信息
       //env：环境变量
       return {
-        
+      
       }
     }
   }
@@ -504,7 +501,7 @@ const plugin = ()=>{
 
 类型：function | object
 
-转换`index.html`的专用钩子
+转换 `index.html`的专用钩子
 
 ```js
 const htmlPlugin = (html,ctx)=>{
@@ -531,13 +528,13 @@ mockjs数据：模拟海量数据，模拟接口
 
 在开发环境中，如果没有配置请求域名，一般请求会向本地开发服务器（即本地的vite开发服务器）发出请求，该插件相当于利用本地开发服务器模拟了接口，插件能根据配置对请求进行拦截处理，使用指定文件夹内设置的mock数据
 
-`vite-plugin-mock`是利用vite的`configureServer(server)`钩子开发的
+`vite-plugin-mock`是利用vite的 `configureServer(server)`钩子开发的
 
 :::
 
 ```js
 axios({
-	method:'post',
+  method:'post',
   url: process.env.NODE_ENV === 'development' ? '/mock/getUser': 'https://www.myapi.com/api/getUser'
 })
 ```
@@ -546,9 +543,8 @@ axios({
 
 `vite-plugin-mock`的使用
 
-1. 安装`npm install -D vite-plugin-mock`
-
-2. 配置`vite.config.js`
+1. 安装 `npm install -D vite-plugin-mock`
+2. 配置 `vite.config.js`
 
    ```js
    //在vite.config.js配置该插件
@@ -558,12 +554,9 @@ axios({
    	]
    })
    ```
+3. `vite-plugin-mock`默认会从项目根目录的 `/mock`目录查找mock数据
 
-   
-
-3. `vite-plugin-mock`默认会从项目根目录的`/mock`目录查找mock数据
-
-   这主要是在node环境下才会使用到的，所以一般要以`commonjs`规范书写
+   这主要是在node环境下才会使用到的，所以一般要以 `commonjs`规范书写
 
    ```js
    // /mock/index.js
@@ -589,9 +582,6 @@ axios({
      }
    ]
    ```
-
-   
-
 4. 在项目中，开发环境下就可以按照正常的网络请求获取mock数据
 
 #### configResolved
@@ -606,7 +596,7 @@ vite天生支持ts，但vite只是编译ts代码，并不会对ts代码进行类
 
 `tsc --noEmit && vite build`
 
-想在浏览器端也呈现出警告信息，可以使用`vite-plugin-checker`
+想在浏览器端也呈现出警告信息，可以使用 `vite-plugin-checker`
 
 ```js
 //vite.config.ts
@@ -629,7 +619,7 @@ plugins:[
 
 ### 为vite环境变量配置声明文件
 
-扩展`import.meta.env`的声明，为自定义的环境变量提供代码提示
+扩展 `import.meta.env`的声明，为自定义的环境变量提供代码提示
 
 ```ts
 //vite-env.d.ts
@@ -681,8 +671,6 @@ export default defineConfig({
 })
 ```
 
-
-
 ### gzip压缩
 
 文件资源体积很大，会加大在网络传输时的压力，降低性能
@@ -691,7 +679,7 @@ export default defineConfig({
 
 将资源文件在服务端进行压缩，减少体积，再将压缩包通过http传输到客户端，客户端接收到后解压
 
-使用`vite-plugin-compression`vite插件来对打包的代码压缩
+使用 `vite-plugin-compression`vite插件来对打包的代码压缩
 
 ```js
 export default defineConfig({
@@ -699,13 +687,13 @@ export default defineConfig({
 })
 ```
 
-打包后将会有一个`.gz`后缀的文件，在服务端要使用`.gz`文件传输给客户端，设置`content-encoding:gzip`，客户端接收到响应头的`content-encoding`是`gzip`类型就会解压的得到源文件
+打包后将会有一个 `.gz`后缀的文件，在服务端要使用 `.gz`文件传输给客户端，设置 `content-encoding:gzip`，客户端接收到响应头的 `content-encoding`是 `gzip`类型就会解压的得到源文件
 
 ### 动态导入
 
-在ESM模式下，除了`import from`静态导入，还可以使用`import`动态导入方法（异步），这个方法返回一个`promise`对象
+在ESM模式下，除了 `import from`静态导入，还可以使用 `import`动态导入方法（异步），这个方法返回一个 `promise`对象
 
-动态导入原理：在代码中使用动态导入方法引入模块，但还没有使用该模块时，`promise`处于`pending`状态，一旦使用到该模块，就会执行`promise`的`resolve`方法去执行动态导入的逻辑；动态导入的逻辑基本实现是，创建`script`标签，`src`指向`import`方法的参数（即模块路径），再将`script`标签推到`body`标签中，`script`标签就会发起`http`请求文件，以达到动态导入，按需加载的效果
+动态导入原理：在代码中使用动态导入方法引入模块，但还没有使用该模块时，`promise`处于 `pending`状态，一旦使用到该模块，就会执行 `promise`的 `resolve`方法去执行动态导入的逻辑；动态导入的逻辑基本实现是，创建 `script`标签，`src`指向 `import`方法的参数（即模块路径），再将 `script`标签推到 `body`标签中，`script`标签就会发起 `http`请求文件，以达到动态导入，按需加载的效果
 
 ### cdn加速
 

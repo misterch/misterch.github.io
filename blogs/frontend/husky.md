@@ -1,5 +1,5 @@
 ---
-title: git工作流规范（husky+lint-staged）
+title: eslint+husky+lint-staged+commitizen配置提交代码规范
 date: 2023-08-08
 tags:
  - git
@@ -322,16 +322,48 @@ pnpx commitizen init cz-conventional-changelog --pnpm --save-dev --save-exact
 
 初始化husky `npx husky-init`，会在根目录下生成一个**.husky**目录，在这个目录下会有一个**pre-commit**文件，这个文件里面的命令在我们执行commit的时候就会执行
 
+可以自定义husky的配置目录
+
+```bash
+husky install gitHooks/husky
+```
+
+这样就会在项目根目录下创建gitHooks目录和husky子目录
+
+### npm生命周期
+
+初始化husky时也会在 `package.json`中的 `script`创建一个 `prepare`命令，`prepare`是**npm脚本命令操作的生命周期**中的一个阶段，执行`install`的时候会触发该操作
+
+```json
+{
+  "script":{
+    "prepare": "husky install"
+  }
+}
+```
+
+npm7+执行install命令时，按照顺序依次执行对应的命令：
+
+* preinstall -> install -> postinstall -> prepublish -> preprepare -> postprepare
+
+### 设置githook
+
+#### pre-commit钩子
+
+在提交commit信息前执行的钩子
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run format
+pnpm run format && git add .
 ```
 
-这里的意思是在commit前先执行 `pnpm run format`，格式化后才提交代码到远程仓库
+这里的意思是在commit前先执行 `pnpm run format`，格式化代码，**但没有提交到暂存库中**，需要git add .将格式化后的代码再提交一次（使用[lint-staged](#配置lint-staged)解决这个问题）
 
-### commitlint检查提交commit信息是否符合规范
+#### commit-msg钩子
+
+这个钩子会拦截提交的commit信息，对信息进行分析，使用commitlint检查提交commit信息是否符合规范
 
 新建一个 `commit-msg`钩子文件
 
@@ -346,6 +378,43 @@ pnpm run format
 pnpm run commitlint
 ```
 
+## 配置lint-staged
+
+提交代码的时候，我们只希望对提交的部分代码进行lint检查，而不影响其他代码，这时就需要使用lint-staged工具
+
+这个工具一般结合husky一起使用，它能够让husky的hook触发的命令只作用于git add到暂存区的文件
+
+安装`pnpm add lint-staged -D`
+
+在`package.json`中配置`lint-staged`
+
+```json
+{
+  "lint-staged":{
+    ".":["pnpm run format"]
+  }
+}
+```
+
+修改`pre-commit`钩子
+
+```bash
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+#原来的
+pnpm run format && git add .
+
+#使用lint-staged后，修改为执行lint-staged
+npm run lint-staged
+
+```
+
+这样配置后，当提交`commit`的时候，就会触发`pre-commit`钩子，钩子执行`lint-staged`配置的脚本，实现提交代码时**只检测暂存区**的文件
+
 ## 参考链接
 
 [尚硅谷Vue项目实战硅谷甄选，vue3项目+TypeScript前端项目一套通关](https://www.bilibili.com/video/BV1Xh411V7b5)
+
+[husky + lint-staged + commitizen 配置提交代码规范_husky lint-staged_倔强的小绵羊的博客-CSDN博客](https://blog.csdn.net/lhz_333/article/details/126461947)
+
+[前端团队规范——husky + lint-staged 构建代码检查工作流（兼容Sourcetree） - 掘金 (juejin.cn)](https://juejin.cn/post/7256975111563100217)
