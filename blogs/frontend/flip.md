@@ -1,12 +1,14 @@
 ---
-title: FLIP实现动画
+title: FLIP实现队列动画
 date: 2023-08-01
 tags:
  - 动画
 ---
 ## 什么是FLIP？
 
-FLIP不是动画插件库，不是方法，而是一个实现动画的思想
+FLIP不是动画插件库，不是方法，而是一个实现动画的思想。
+
+通过FLIP思想可以更容易实现**队列动画**，vue的 `<TransitionGroup>`添加`move-class`实现平滑过渡就是基于FLIP思想
 
 ### 核心思想
 
@@ -21,7 +23,6 @@ I：Invert；翻转元素到起始位置，计算first和last之间的位置变�
 P：Play；播放动画回到结束位置，调用元素animate方法，设置动画
 
 ### 示例
-
 
 <iframe height="300" style="width: 100%;" scrolling="no" title="flip实现动画demo1" src="https://codepen.io/misterch/embed/gOQZjme?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/misterch/pen/gOQZjme">

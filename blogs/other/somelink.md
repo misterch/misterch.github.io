@@ -20,6 +20,8 @@ date: 2023-07-23
 
 [小满zs](https://xiaoman.blog.csdn.net)
 
+[青山 | 学无止境 (qiyoe.cn)](https://qiyoe.cn/)
+
 ## Vue
 
 [Vue.js - 渐进式 JavaScript 框架 | Vue.js (vuejs.org)](https://cn.vuejs.org/)
@@ -63,6 +65,8 @@ date: 2023-07-23
 [Regex 101 - ZH-CN (regexlearn.com)](https://regexlearn.com/zh-cn/learn/regex101)
 
 [regex101: build, test, and debug regex](https://regex101.com/)
+
+[正则大全 (any86.github.io)](https://any86.github.io/any-rule/)
 
 ## Linux
 

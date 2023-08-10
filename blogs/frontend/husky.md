@@ -1,6 +1,8 @@
 ---
-title: eslint+husky+lint-staged+commitizen配置提交代码规范
+title: lint、commitizen配合husky、lint-staged实现提交commit规范化和自动代码规范化
 date: 2023-08-08
+categories:
+ - 代码规范
 tags:
  - git
  - husky
@@ -10,10 +12,15 @@ tags:
 ## eslint配置
 
 * eslint
+  **解析器**
 * @babel/eslint-parser：是一个babel parser解析器，lint所有有效的babel代码
-* @typescript-eslint/parser：是typescript parser解析器
-* @typescript-eslint/eslint-plugin：是typescript插件，包含ts代码检查规则
+* @typescript-eslint/parser：是 `typescript` parser解析器
 * vue-eslint-parser：是一个 `.vue`文件解析器，对vue文件中 `<template>`进行lint
+* @typescript-eslint/eslint-plugin：是typescript插件，包含ts代码检查规则
+  **拓展规则插件**
+
+使用：在plugins中引入插件的规则，在extends中使用插件的规则使其生效，rules中可对插件的规则进行自定义配置
+
 * eslint-plugin-vue：lint所有vue语法的规则的插件
 * eslint-plugin-import：供对ES6+ import/export语法的支持
 * eslint-plugin-node：添加对node的eslint支持
@@ -153,17 +160,17 @@ pnpm add sass sass-loader postcss postcss-scss postcss-html stylelint-config-pre
 
 * stylelint
 * stylelint-config-standard：stylelint拓展插件，最基本的检查规则
-* stylelint-config-prettier：配饰stylelint和prettier兼容
-* stylelint-config-recess-order：配置stylelint css属性书写顺序
-* stylelint-order
-* 检查scss语法
+* stylelint-config-prettier：配置stylelint和prettier兼容，关闭冲突部分
+* stylelint-config-recess-order：配置stylelint css属性书写顺序，需要安装 `stylelint-order`
+* 检查 `scss`语法
+  `stylelint-config-recommended-scss`或者 `stylelint-config-standard-scss`
+  捆绑安装 `stylelint-scss`、`postcss-scss`
+  `stylelint-scss`：增加scss语法解析支持
   `postcss-scss`：检查指定文件的样式，如 `.scss`，`.vue`，`.html`，`.css`
-  `stylelint-scss`、`stylelint-config-recommended-scss`
-* 检查.vue文件的样式书写：
-  需要安装postcss-html，配置应用到.vue文件
+* 检查 `.vue`文件的样式书写：
   安装 `stylelint-config-standard-vue`
-  只是对.vue文件的样式生效，仍需结合 `stylelint-config-html`使用，包中有 `stylelint-config-html/vue`检查.vue文件的template
-  与scss一起使用，包中含有scss的规则 `stylelint-config-standard-vue/scss`
+  在vue文件中使用scss，需要安装 `stylelint-config-standard-scss`，且设置 `stylelint-config-standard-vue`为 `stylelint-config-standard-vue/scss`，解析vue文件中的template
+  stylelint默认不解析非css文件，`stylelint-config-html`插件可以支持非css文件的解析，捆绑安装 `postcss-html`，可重写指定某些文件的配置
 
 ### 配置 .stylelintrc.*
 
@@ -171,13 +178,14 @@ pnpm add sass sass-loader postcss postcss-scss postcss-html stylelint-config-pre
 // @see https://stylelint.bootcss.com/
 
 module.exports = {
+    plugin: 
     extends: [
-        'stylelint-config-standard', // 配置stylelint拓展插件
-        'stylelint-config-html/vue', // 配置 vue 中 template 样式格式化
-        'stylelint-config-standard-scss', // 配置stylelint scss插件
-        'stylelint-config-recommended-vue/scss', // 配置 vue 中 scss 样式格式化
-        'stylelint-config-recess-order', // 配置stylelint css属性书写顺序插件,
-        'stylelint-config-prettier', // 配置stylelint和prettier兼容
+      'stylelint-config-standard', // 配置stylelint拓展插件
+      'stylelint-config-recommended-scss',
+      'stylelint-config-recommended-vue/scss', // 配置 vue 中 scss 样式格式化
+      'stylelint-config-html/vue', // 默认不解析非css文件，插件可以支持非css文件的解析，捆绑安装postcss-html
+      'stylelint-config-recess-order', // 配置stylelint css属性书写顺序插件,
+      'stylelint-config-prettier', // 配置stylelint和prettier兼容
     ],
     overrides: [
         {
@@ -220,6 +228,16 @@ module.exports = {
             },
         ],
     },
+}
+```
+
+### 配置package.json
+
+```json
+{
+  "script":{
+    "lint:style": "stylelint src/**/*.{css,scss,vue} --cache --fix"
+  }
 }
 ```
 
@@ -332,7 +350,7 @@ husky install gitHooks/husky
 
 ### npm生命周期
 
-初始化husky时也会在 `package.json`中的 `script`创建一个 `prepare`命令，`prepare`是**npm脚本命令操作的生命周期**中的一个阶段，执行`install`的时候会触发该操作
+初始化husky时也会在 `package.json`中的 `script`创建一个 `prepare`命令，`prepare`是**npm脚本命令操作的生命周期**中的一个阶段，执行 `install`的时候会触发该操作
 
 ```json
 {
@@ -384,9 +402,9 @@ pnpm run commitlint
 
 这个工具一般结合husky一起使用，它能够让husky的hook触发的命令只作用于git add到暂存区的文件
 
-安装`pnpm add lint-staged -D`
+安装 `pnpm add lint-staged -D`
 
-在`package.json`中配置`lint-staged`
+在 `package.json`中配置 `lint-staged`
 
 ```json
 {
@@ -396,7 +414,7 @@ pnpm run commitlint
 }
 ```
 
-修改`pre-commit`钩子
+修改 `pre-commit`钩子
 
 ```bash
 #!/usr/bin/env sh
@@ -409,7 +427,7 @@ npm run lint-staged
 
 ```
 
-这样配置后，当提交`commit`的时候，就会触发`pre-commit`钩子，钩子执行`lint-staged`配置的脚本，实现提交代码时**只检测暂存区**的文件
+这样配置后，当提交 `commit`的时候，就会触发 `pre-commit`钩子，钩子执行 `lint-staged`配置的脚本，实现提交代码时**只检测暂存区**的文件
 
 ## 参考链接
 
@@ -418,3 +436,5 @@ npm run lint-staged
 [husky + lint-staged + commitizen 配置提交代码规范_husky lint-staged_倔强的小绵羊的博客-CSDN博客](https://blog.csdn.net/lhz_333/article/details/126461947)
 
 [前端团队规范——husky + lint-staged 构建代码检查工作流（兼容Sourcetree） - 掘金 (juejin.cn)](https://juejin.cn/post/7256975111563100217)
+
+[lint-staged 使用教程 - 较瘦 - 博客园 (cnblogs.com)](https://www.cnblogs.com/jiaoshou/p/12250278.html)
