@@ -154,10 +154,6 @@ module.exports = {
 pnpm add sass sass-loader postcss postcss-scss postcss-html stylelint-config-prettier stylelint-config-recess-order stylelint-scss stylelint-config-recommended-scss stylelint-config-standard-scss stylelint-config-standard stylelint-config-standard-vue stylelint-order -D
 ```
 
-```
-
-```
-
 * stylelint
 * stylelint-config-standard：stylelint拓展插件，最基本的检查规则
 * stylelint-config-prettier：配置stylelint和prettier兼容，关闭冲突部分
