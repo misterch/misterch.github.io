@@ -19,7 +19,7 @@ npm安装的包默认安装在c盘，可以使用npm config set修改全局依�
 
 全局依赖的默认安装路径在C盘，为了不占用C盘空间，一般会修改安装位置
 
-使用`npm config list --global`查看全局配置
+使用 `npm config list --global`查看全局配置
 
 修改步骤：
 
@@ -34,7 +34,7 @@ npm安装的包默认安装在c盘，可以使用npm config set修改全局依�
 
    ⚠️注意：如果不设置的话，当执行命令时会出现**不是内部命令**的错误
 
-   在系统变量中新增 `NODE_PATH`，指向 `e:\nodejs\node_global`
+   在系统变量中新增 `NODE_PATH`，指向 `e:\nodejs\node_global`，指向安装依赖的目录位置node_modules
 4. 这样就完成了全局依赖安装的位置，可以安装全局依赖测试
 
    ```bash
@@ -70,3 +70,9 @@ pnpm config set state-dir "e:\nodejs\pnpm"
 ```
 
 设置后使用pnpm安装的全局依赖包将保存在 `e:\nodejs\pnpm\pnpm-global`中
+
+pnpm也可以代替nvm来管理node版本
+
+```bash
+pnpm env use --global <node version>
+```

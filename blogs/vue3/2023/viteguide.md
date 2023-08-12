@@ -3,6 +3,8 @@ title: Vite指南
 date: 2023-07-23
 tags:
  - postcss
+ - mock
+ - 构建
 categories:
  - vite
 ---
@@ -490,7 +492,7 @@ const plugin = ()=>{
       //config：vite的配置信息
       //env：环境变量
       return {
-      
+    
       }
     }
   }
@@ -543,7 +545,7 @@ axios({
 
 `vite-plugin-mock`的使用
 
-1. 安装 `npm install -D vite-plugin-mock`
+1. 安装 `npm install -D vite-plugin-mock mockjs`
 2. 配置 `vite.config.js`
 
    ```js
