@@ -187,6 +187,30 @@ vite会将环境变量注入到 `import.meta.env`中
 
 如果想以自定义为其他名称，可以通过 `envPrefix`来配置
 
+### 智能提示
+
+随着在环境变量文件`.env.[mode]`中定义越来越多的环境变量，可能需要在代码中获取以`VITE_`为前缀的用户自定义环境变量的typescript智能提示
+
+在`src`目录下创建`env.d.ts`，扩展`vite/client`的`ImportMeta`
+
+```ts
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly NODE_ENV: 'string'
+  readonly VITE_TITLE: 'string'
+  readonly VITE_SERVER: 'string'
+  readonly VITE_BASE_URL: 'string'
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
+```
+
+
+
 ## vite开发服务器原理分析
 
 [Vite 原理分析 - 掘金 (juejin.cn)](https://juejin.cn/post/6881078539756503047)
