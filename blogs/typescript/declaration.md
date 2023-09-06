@@ -1,6 +1,6 @@
 ---
 title: Typescript类型声明文件
-data: 2023-08-28
+date: 2023-08-28
 category:
  - typescript
 tags:
@@ -55,44 +55,6 @@ declare module TestModule {
 
 **没有顶层import、export**的文件认为是一般脚本，运行在**global** scope上，顶层定义的变量、函数、类都存在于**全局作用域上，外部模块和脚本都可访问**
 
-## include
-
-`include`属性指定所要编译的文件列表，既支持逐一列出文件，也支持通配符。文件位置相对于当前配置文件而定。
-
-```ts
-//tsconfig.json
-{
-  "include":[
-    "src/**/*.ts"
-  ]
-}
-```
-
-include支持三种通配符
-
-- ?：指代单个字符
-- *：指代任意字符，不含路径分隔符
-- **：指定任意目录层级
-
-如果不指定后缀名，默认包括`.ts`、`.tsx`、`.d.ts`，打开`allowJs`，则还包括`.js`和`.jsx`
-
-
-
-## typeRoots
-
-`typeRoots`设置类型模块所在的目录，默认是`node_modules/@types`。
-
-## types
-
-`types`设置`typeRoots`目录下需要包括在编译之中的类型声明模块。默认情况下，该目录下的所有类型模块，都会自动包括在编译之中。
-
-如果设置了这个选项，那么只有指定的类型声明模块才会被包括，否则typeRoots设置的目录下的其他类型声明模块不会被包括
-
-:bangbang:注意：
-
-1. 必须为`.d.ts`类型声明模块
-2. 这是**声明模块**，是有`export`和`import`的，但是在使用类型时，会有全局提示，根据提示就可以import该类型得到类型提示
-
 ## 声明文件的来源
 
 ### 自动生成
@@ -143,6 +105,54 @@ include支持三种通配符
 
   可以自己为没有类型声明模块的库编写类型声明模块，是模块，即有export，import
 
+## 拓展
+
+### 拓展全局变量
+
+通过声明合并，就可以扩展全局变量类型
+
+也可以使用`declare namespace`给已有的命名空间添加类型声明
+
+### npm包或UMD库中扩展全局变量类型
+
+对于npm包或UMD库，如果**导入此库后会拓展全局变量**，需要使用`declare global`
+
+```ts{9}
+// types/foo/index.d.ts
+
+declare global {
+    interface String {
+        prependHello(): string;
+    }
+}
+
+export {};
+```
+
+:bangbang:注意：虽然声明文件没有导出任何东西，但仍需要导出一个空对象，告诉编译器这是一个模块，而不是一个全局变量的声明文件
+
+### 扩展模块插件
+
+`declare module`可以用来**扩展原有模块**的类型
+
+:::tip
+
+如果是需要扩展原有模块的话，需要在类型声明文件中**先引用原有模块，再使用 `declare module`** 扩展原有模块
+
+`declare module` 也可用于在**一个文件**中一次性声明**多个模块**的类型
+
+:::
+
+```ts
+// types/moment-plugin/index.d.ts
+
+import * as moment from 'moment';
+
+declare module 'moment' {
+    export function foo(): moment.CalendarKey;
+}
+```
+
 ## ///三斜杠命令
 
 只能用在文件的头部，用作其他地方会被当做普通的注释
@@ -150,6 +160,19 @@ include支持三种通配符
 声明文件的内容非常多，可以拆分多个文件，然后在入口文件中使用三斜杠加载其他拆分后的文件
 
 三斜杠命令也可用于普通脚本加载类型声明文件
+
+只有以下几个场景才需要使用三斜杠命令**代替import**
+
+1. 书写一个全局变量的声明文件
+2. 需要依赖一个全局变量的声明文件
+
+### 书写一个全局变量的声明文件
+
+我们知道全局变量声明文件时不允许有import或者export关键字出现的，否则就被视为一个模块，不再是全局的。当我们书写一个全局变量声明文件时**需要引入另一个库的类型**，就需要用到三斜杠命令
+
+### **依赖**一个全局变量的声明文件
+
+当我们需要依赖一个全局变量的声明文件时，由于全局变量不支持通过 `import` 导入，当然也就必须使用三斜线指令来引入了
 
 ### `/// <reference path="" />`
 
@@ -286,11 +309,15 @@ declare global {
 
 ## 总结
 
-1. 文件中有export或者import关键字，称为模块，需要导入使用；否则是全局的脚本声明文件，无需导入使用
-2. 模块文件可在tsconfig.json中types选项指定，或者typeRoots选项指定目录下的声明文件，这样就无需手动导入
+1. 声明文件中**顶层**有`export`或者`import`关键字，称为模块，需要导入使用；否则是全局的脚本声明文件，无需导入使用
+2. npm或UMD扩展全局变量使用`declare global`；扩展插件的类型使用`declare module '插件名称'`
+2. 书写全局的声明文件引用其他库，使用三斜杠代替import；全局声明文件需要引入其他库同理；拆分同理
+2. 三斜杠的types用于声明对另一个库的依赖；path用于声明对另一个文件的依赖
 
 ## 参考链接
 
 [TypeScript 教程 - 网道 (wangdoc.com)](https://wangdoc.com/typescript/)
+
+[声明文件 · TypeScript 入门教程 (xcatliu.com)](http://ts.xcatliu.com/basics/declaration-files.html)
 
 [TypeScript 中的 Module知识点 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/640255494)

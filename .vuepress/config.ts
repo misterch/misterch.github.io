@@ -40,7 +40,11 @@ export default defineUserConfig({
       "/docs/node/":[
         {
           text: "基础理论",
-          children:["1.md","2.md","3.md","4.md","5.md","6.md"]
+          children:["/docs/node/essentials/1.md","/docs/node/essentials/2.md","/docs/node/essentials/3.md","/docs/node/essentials/4.md","/docs/node/essentials/5.md","/docs/node/essentials/6.md"]
+        },
+        {
+          text:'实践',
+          children:['/docs/node/practice/1.md']
         }
       ],
       "/docs/git/":[
@@ -97,7 +101,7 @@ export default defineUserConfig({
         children:[
           {
             text: "Node",
-            link: "/docs/node/1.md"
+            link: "/docs/node/essentials/1.md"
           },
           {
             text: "Git",
