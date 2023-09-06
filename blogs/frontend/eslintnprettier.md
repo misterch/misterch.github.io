@@ -469,6 +469,18 @@ module.export = {
 }
 ```
 
+## 一些出现的问题
+
+### 'module' is not defined
+
+在`eslintrc`配置文件中设置`env.node=true`
+
+### 保存没有自动格式化
+
+原因是`eslintrc`配置没有被应用到
+
+留意`package.json`的`type`（commonjs和module）的设置，以及`eslintrc`配置文件的后缀（cjs和mjs）。
+
 ## 参考链接
 
 [通关前端工程化（一）ESLint全方位解析，让你不再面向搜索引擎配置 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/554396222)
