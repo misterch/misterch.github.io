@@ -1,7 +1,7 @@
 ---
 title: Typescript类型声明文件
 date: 2023-08-28
-category:
+categories:
  - typescript
 tags:
  - 声明文件
