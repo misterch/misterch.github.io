@@ -18,7 +18,7 @@ tags:
 
 ## 渲染主线程
 
-![](/img/renderprogress.png)
+![](img/renderprogress.png)
 
 ### 解析HTML
 
@@ -26,11 +26,11 @@ tags:
 
 解析过程中遇到CSS解析CSS，遇到JS执行JS。**为了提高解析效率**，浏览器在开始解析前，会启动一个**预解析线程**，率先下载HTML中的外部CSS文件和外部JS文件
 
-![](/img/meetcss.png)
+![](img/meetcss.png)
 
 如果主线程解析到`link`位置，此时外部的CSS文件还没有下载解析好，主线程不会等待，继续解析后续的HTML。这是因为下载和解析CSS的工作是在预解析线程中进行的。**这就是CSS不会阻塞HTML解析的根本原因**
 
-![](/img/meetjs.png)
+![](img/meetjs.png)
 
 如果主线程解析到`script`位置，会**停止解析HTML**，转而等待JS文件下载好，并将全局代码解析执行完成后，才能继续接续HTML。这是因为JS代码的执行过程**可能会修改当前的DOM树**，所以DOM树的生成必须停止。这就是JS会阻塞HTML解析的根本原因
 
@@ -102,7 +102,7 @@ GPU进程会启动多个线程来完成光栅化，并且优先处理靠近视�
 
 ### 画draw
 
-![](/img/wholerender.png)
+![](img/wholerender.png)
 
 合成线程计算出每个位图在屏幕上的位置，交给GPU（调用显卡）进行最终呈现
 
@@ -118,7 +118,7 @@ GPU进程会启动多个线程来完成光栅化，并且优先处理靠近视�
 
 ## reflow
 
-![](/img/reflow.png)
+![](img/reflow.png)
 
 本质是重新计算layout树，过程很影响效率
 
