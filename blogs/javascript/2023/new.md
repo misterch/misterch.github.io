@@ -32,9 +32,9 @@ ben = {
 ```js
 function myNew(constrc,...args){
 	let obj = {}
-	//Object.create()可以根据提供的对象的原型对象创建新对象
+	//Object.create()可以根据提供的对象的【原型对象】创建新对象，修改目标对象的隐式原型，可以达到原型式继承
 	//obj.__proto__ = constrc.prototype
-	obj = Object.create(constrc)
+	obj = Object.create(constrc.prototype)
 	//将构造函数的this绑定到新对象
 	const result = constrc.apply(obj,args)
 	//构造函数返回的是对象，则使用构造函数执行的结果，否则返回新创建的对象

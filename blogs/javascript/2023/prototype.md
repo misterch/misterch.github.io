@@ -7,6 +7,8 @@ categories:
 tags:
  - 原理
  - prototype
+ - Object.setPrototypeOf
+ - Object.create
  - 构造函数
 ---
 ![](https://img-blog.csdnimg.cn/20190311194017886.png)
@@ -16,7 +18,7 @@ function Foo(){}
 let f1 = new Foo()
 ```
 
-## \__proto__
+## \_\_proto\_\_
 
 :::tip
 
@@ -79,9 +81,9 @@ Foo.prototype.constructor === Foo
 
 ```js
 function inherit(Child, Parent) {
-     // 继承原型上的属性 
+     // 继承原型上的属性和方法
     Child.prototype = Object.create(Parent.prototype)
-     // 修复 constructor
+     // 因为继承了父类，构造器也修改成了父类构造器，需要修复 constructor
     Child.prototype.constructor = Child
     // 存储超类
     Child.super = Parent
@@ -104,6 +106,50 @@ function inherit(Child, Parent) {
 }
 ```
 
+## 关于Object.create和Object.setPrototype
+**用法**
+```js
+A.prototype = Object.create(B.prototype)
+Object.setPrototypeOf(A.prototype, B.Prototype)
+```
+**相同作用**
+
+都能达到`A.prototype.__proto__ = B.prototype`的效果，实现原型继承
+
+**区别**
+
+`A.prototype = Object.create(B.prototype)`会改变A整个`prototype`，即不单会修改`__proto__`同时也会**修改构造函数的指向**和**丢失A原本的prototype**
+
+`Object.setPrototypeOf(A.prototype, B.Prototype)`仅仅只修改对象的__proto__指向
+
+```js
+function Person(){
+  this.name = 'person'
+}
+Person.prototype.say = function(){
+  console.log('person say')
+}
+
+function Student(){
+  this.name = 'student'
+}
+Student.prototype.doHomeWork = function(){
+  console.log('doHomeWork')
+}
+
+function Worker(){
+  this.name = 'worker'
+}
+Worker.prototype.doWork = function(){
+  console.log('doWork');
+}
+
+//Object.create创建的新对象会覆盖掉Student.prototype对象，这样原本Student的__proto__和constructor都会修改为Person.prototype
+Student.prototype = Object.create(Person.prototype)
+//只会修改Worker.prototype对象的__proto__指向Person.prototype
+//Worker.prototype对象上除__proto__外的属性和方法都不会丢失，构造函数仍然是Worker
+Object.create(Worker.prototype,Person.prototype)
+```
 ## 参考资料
 
 [帮你彻底搞懂JS中的prototype、__proto__与constructor（图解）码飞_CC的博客](https://blog.csdn.net/cc18868876837/article/details/81211729)
