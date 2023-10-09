@@ -11,7 +11,7 @@ tags:
  - Object.create
  - 构造函数
 ---
-![](https://img-blog.csdnimg.cn/20190311194017886.png)
+![](./images/prototype.png)
 
 ```js
 function Foo(){}
@@ -148,7 +148,7 @@ Worker.prototype.doWork = function(){
 Student.prototype = Object.create(Person.prototype)
 //只会修改Worker.prototype对象的__proto__指向Person.prototype
 //Worker.prototype对象上除__proto__外的属性和方法都不会丢失，构造函数仍然是Worker
-Object.create(Worker.prototype,Person.prototype)
+Object.setPrototypeOf(Worker.prototype,Person.prototype)
 ```
 ## 参考资料
 
