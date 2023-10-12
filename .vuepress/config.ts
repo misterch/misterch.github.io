@@ -44,7 +44,7 @@ export default defineUserConfig({
         },
         {
           text:'实践',
-          children:['/docs/node/practice/1.md']
+          children:['/docs/node/practice/globalVar.md','/docs/node/practice/innerModule.md','/docs/node/practice/modules.md']
         }
       ],
       "/docs/git/":[

@@ -3,7 +3,7 @@ title: 装饰器
 date: 2023-07-23
 categories:
  - 面试
- - ECMA
+ - ecmascript
 tags:
  - 装饰器
 ---

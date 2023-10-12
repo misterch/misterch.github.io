@@ -3,7 +3,7 @@ title: class类的静态属性和实例属性
 date: 2023-07-23
 categories: 
  - javascript
- - ECMA
+ - ecmascript
  - 面试
 ---
 ## 类的静态属性和静态方法
