@@ -4,9 +4,9 @@ date: 2023-10-17
 categories:
  - javascript
  - ecmascript
+ - 面试
 tags:
  - 原理
- - 面试
 ---
 
 ## 执行上下文

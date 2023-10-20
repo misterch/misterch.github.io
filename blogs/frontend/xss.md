@@ -1,9 +1,10 @@
 ---
 title: XSS攻击原理及防御方法
 date: 2023-08-02
+categories:
+ - 面试
 tags:
  - 安全
- - 面试
 ---
 ## XSS概念
 

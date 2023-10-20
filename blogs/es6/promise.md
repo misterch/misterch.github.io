@@ -4,9 +4,9 @@ date: 2023-10-11
 categories:
  - javascript
  - ecmascript
+ - 面试
 tags:
  - 原理
- - 面试
  - 异步
 ---
 
