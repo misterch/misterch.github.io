@@ -16,7 +16,7 @@ Promise A+ 规定：
 
 1. 所有的异步场景，都可以看作是一个异步任务，每个异步任务，在JS中应该表现为一个**对象**，该对象称之为**Promise对象**，也叫做任务对象
 
-   <img src="\img\20210618154556.png" alt="image-20210618154556558" style="zoom:50%;" />
+   <img src="./img/20210618154556.png" alt="image-20210618154556558" style="zoom:50%;" />
 
    根据常理，它们之间存在以下逻辑：
 
@@ -26,19 +26,19 @@ Promise A+ 规定：
 
 2. 每个任务对象，都应该有两个阶段、三个状态
 
-   <img src="\img\20210618155145.png" alt="image-20210618155145355" style="zoom:50%;" />
+   <img src="./img/20210618155145.png" alt="image-20210618155145355" style="zoom:50%;" />
 
 3. `挂起->完成`，称之为`resolve`；`挂起->失败`称之为`reject`。任务完成时，可能有一个相关数据；任务失败时，可能有一个失败原因。
 
-   <img src="\img\20210618160538.png" style="zoom:50%;">
+   <img src="./img/20210618160538.png" style="zoom:50%;">
 
 4. 可以针对任务进行后续处理，针对完成状态的后续处理称之为onFulfilled，针对失败的后续处理称之为onRejected
 
-   <img src="http://mdrs.yuanjin.tech/img/20210618161125.png" style="zoom:50%"/>
+   <img src="./img/20210618161125.png" style="zoom:50%"/>
 
 ## 链式调用
 
-<img src="http://mdrs.yuanjin.tech/img/20210621103501.png"/>
+<img src="./img/20210621103501.png"/>
 
 1. then方法必定会返回一个新的Promise
 
