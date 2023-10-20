@@ -5,6 +5,8 @@ categories:
  - javascript
  - ecmascript
  - 面试
+tags:
+ - class
 ---
 ## 类的静态属性和静态方法
 

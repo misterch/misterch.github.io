@@ -1,6 +1,8 @@
 ---
 title: 原生实现移动端滚动选择器
 date: 2023-09-06
+categories:
+ - css3
 tags:
  - 滚动选择器
  - 组件
