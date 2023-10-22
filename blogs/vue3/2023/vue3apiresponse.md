@@ -105,9 +105,9 @@ $nextTick()
 
 **props**：传给组件的响应式对象，解构`props`可以使用`toRefs()`和`toRef()`，否则直接解构失去响应性
 
-**context**：setup上下文对象，非响应式，可直接解构
+**context**：`setup`上下文对象，非响应式，可直接解构
 
-context对象含有的属性：attrs、slots、emit、expose等
+`context`对象含有的属性：`attrs`、`slots`、`emit`、`expose`等
 
 #### 生命周期钩子
 
