@@ -159,6 +159,6 @@ setup(){
 }
 ```
 
-## 降低心智负担
+## 最佳实践：组合式函数
 
 所有的**composition function**均以`ref`的结果返回，以保证`setup`函数的返回结果中不包含`reactive`或`readonly`直接产生的数据
