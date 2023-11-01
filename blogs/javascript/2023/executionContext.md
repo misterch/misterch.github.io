@@ -48,8 +48,9 @@ js代码执行必须要有环境，首先就是全局上下文
 1. this指向
 
    - 直接调用函数，this指向全局对象
-   - 函数外调用函数u，this指向全局对象
+   - 函数外调用函数，this指向全局对象
    - 通过对象调用或者new一个函数，this指向调用函数的对象或new出来的新对象
+   - 箭头函数中没有this，在箭头函数中的this是该函数所在作用域指向的对象
 
 2. VO（Variable Object）变量对象
 
@@ -175,6 +176,47 @@ Special()
 // 解析：A是在全局执行上下文创建的，A的[[scope]]指向的是全局AO，无论在哪里执行，都不会变
 ```
 
+### 箭头函数
+
+箭头函数没有this，箭头函数中使用的this是**==定义==该函数所在作用域指向的对象**，无法被改变
+
+```js
+let obj = {
+  a:11,
+  objThis(){
+    console.log(this,this.a)
+  },
+  //箭头函数中的this就是定义函数时所在作用域指向的对象
+  //箭头函数没有被其他函数包裹，其作用域是最外层的js环境，即window
+  arrowThisFromWindow:()=>{
+    console.log(this)
+  }
+}
+
+let thisFoeverToWindow = () => {
+  //箭头函数中的this就是定义函数时所在作用域指向的对象
+  //thisFoeverToWindow函数在全局作用域定义的，箭头函数没有this，this指向定义该函数所在作用域对象window
+  console.log(this)
+}
+
+//函数被谁调用，this指向谁
+let thisFromInvoke = function(){
+  console.log(this)
+}
+
+obj.fn3 = thisFoeverToWindow
+obj.fn4 = thisFromInvoke
+
+//objThis函数中的this指向调用它的对象，即obj
+obj.objThis() // obj,11
+
+obj.arrowThisFromWindow() //window
+
+thisFromInvoke() // window
+
+obj.fn4() // obj
+```
+
 
 
 ### 闭包
@@ -211,3 +253,4 @@ f() //同理，打印出2
 10. 作用域只是用于划分在这个**作用域对应的执行上下文环境**里面定义的**变量的有效范围**，超出这个作用域则无效
 11. 作用域链式一个指向函数定义时的变量对象（VO）的指针
 12. 在一个作用域中查找一个变量，如果这个作用域中不存在，则会沿着作用域链向外面的作用域查找
+13. 箭头函数体内的`this`对象，就是定义**该函数时所在的作用域指向的对象**，而不是使用时所在的作用域指向的对象。
