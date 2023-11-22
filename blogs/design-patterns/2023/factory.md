@@ -88,11 +88,11 @@ PlaneFactory.create = function(type){
     throw `不存在${type}类型`
   }
   //继承抽象工厂类
-  if(PlaneFactory.prototype[type].prototype !== PlaneFactory.prototype){
+  if(PlaneFactory.prototype[type].prototype.__proto__ !== PlaneFactory.prototype){
     PlaneFactory.prototype[type].prototype = new PlaneFactory()
   }
   //产品类需要的参数
-  const args = [].prototype.slice.call(arguments,1)
+  const args = [].slice.call(arguments,1)
   return new PlaneFactory.prototype[type](...args)
 } 
 //抽象工厂公共接口

@@ -1,6 +1,6 @@
 ---
 title: 装饰者模式
-date: 1023-11-18
+date: 2023-11-18
 categories:
  - 设计模式
 ---
@@ -14,3 +14,40 @@ categories:
 ### 实现
 
 构造函数需要**一个装饰资源池**，提供相应的装饰方法，提供添加装饰方法的方法
+
+```js
+function PlaneFactory(){
+  this.decorateQueue = []
+}
+// ...省略其他代码
+
+//集合所有装饰方法
+PlaneFactory.prototype.decorators = {
+  eatOneLife(obj){
+    obj.blood += 100
+  },
+  eatTwoLife(){
+    obj.blood += 200
+  },
+  eatShrinkLife(){
+    obj.blood -= 100
+  }
+}
+//收集对某个对象的装饰描述
+PlaneFactory.prototype.decorate = function(decorator){
+  if(this.decorators[decorator]){
+    this.decorateQueue.push(this.decorators[decorator])
+  }
+}
+//让装饰方法作用在该对象身上  
+PlaneFactory.prototype.update = function(){ 
+	this.decorateQueue.forEach(decotator=>{
+    decotator(this)
+  })
+}
+
+const oSp = PlaneFactory.create('SmallPlane')
+oSp.decorate('eatOneLife')
+oSp.update()
+```
+
