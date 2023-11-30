@@ -219,18 +219,18 @@ module.export = {
 引入`src/entry/client.entry`作为打包构建的入口文件
 
 ```js
-const {default:merge} require('webpack-merge')
-const path = require('path')
-const HtmlWebpackPlugins = require('html-webpack-plugin')
+const {default:merge} = require('webpack-merge')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const {resolve} = require('path')
 const base = require('./webpack.base.js')
 module.exports = merge(base,{
   entry:{
-    client: path.resolve(__dirname,'../src/entry/client.js')
+    client: resolve(__dirname,'../src/entry/client.entry.js')
   },
   plugins:[
-    new HtmlWebpackPlugins({
+    new HtmlWebpackPlugin({
       filename:'index.html',
-      template: path.resolve(__dirname,'../public/index.html')
+      template:resolve(__dirname,'../public/template.html')
     })
   ]
 })
@@ -273,7 +273,7 @@ module.exports = merge(base,{
 }
 ```
 
-### index.ssr.html
+### server/index.ssr.html
 
 ```html:{8,10}
 <!DOCTYPE html>
@@ -284,7 +284,7 @@ module.exports = merge(base,{
   </head>
   <body>
 		<!--vue-ssr-outlet-->
-    <!-- 需要引入打包构建的客户端的js -->
+    <!-- 需要引入打包构建的客户端的js，使用vue来接管发送到前端的静态页面 -->
     <script src="/client.bundle.js"></script>
   </body>
 </html>
@@ -334,6 +334,10 @@ server.listen(8000,()=>{
 ### src/app.vue
 
 这里一定要设置vue的挂载点id，否则找不到挂载点
+
+客户端打包，以public/template.html为模板
+
+服务端打包，以server/index.ssr.html为模板
 
 `src/entry/client.entry`中`app.$mount('#app')`的作用就是挂载到**app.vue**
 
