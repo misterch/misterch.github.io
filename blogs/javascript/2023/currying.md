@@ -5,6 +5,7 @@ tags:
  - 原理
 categories:
  - javascript
+ - 工具函数
 ---
 
 ## 什么是柯里化
