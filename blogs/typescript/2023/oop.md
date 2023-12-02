@@ -6,6 +6,8 @@ categories:
  - 设计模式
 tags:
  - 面向对象
+ - interface
+ - class
 ---
 
 ##  什么是面向对象
@@ -172,37 +174,259 @@ const b2 = ChessBoard.createBoard()
 b1===b2
 ```
 
+## 再谈接口
+
+接口用于约束类、对象、函数，是一个类型契约
+
+```ts
+abstract class Animals{
+  abstract type:string
+  constructor(public name:string,public age:number){}
+  sayHello(){
+    console.log(`hello,我是${this.type},我叫${this.name},今年${this.age}岁`)
+  }
+}
+
+
+class Dog extends Animals{
+  type:string = '狗'
+  //计算
+  calculate(){}
+  //跳舞
+  dance(){}
+}
+
+class Lion extends Animals{
+  type:string = '狮子'
+  singleFire(){}
+  doubleFire(){}
+}
+
+class Tiger extends Animals{
+  type:string = '老虎'
+  singleFire(){}
+  doubleFire(){}
+}
+
+class Monkey extends Animals{
+  type:string = '猴子'
+  //平衡
+  singlePlankBridge(){}
+  //钢丝
+  wireWalking(){}
+}
 
 
 
+const animals:Animals[] = [
+  new Dog('二狗',1),
+  new Monkey('悟空',5),
+  new Lion('狮子王',8),
+  new Tiger('王老虎',6)
+]
+
+animals.forEach(a=>{
+  //根据判断类型来使用某种能力
+  //类型中的能力可能会变化的，一旦能力变化可能就会出错
+  if(a instanceof Lion || a instanceof Tiger){
+    a.singleFire()
+    a.doubleFire()
+  }
+})
+```
+
+每个类都有各自的能力，如果不使用接口实现时，会有一些问题
+
+1. 对能力（成员函数）没有强约束力
+2. 容易将类型和能力耦合在一起（使用能力前却要判断类型，会出现问题。类型的能力可能会变化）
+
+> 面向对象领域中的接口的语义：表达了某个类是否拥有某种能力
+>
+> 某个类具有某种能力，就是实现了某种接口
+
+```ts
+export interface FireShow{
+  singleFire():void
+  doubleFire():void
+}
+
+export interface BalanceShow{
+  singlePlankBridge():void
+  wireWalking():void
+}
+
+export interface WisdomShow{
+  calculate():void
+  dance():void
+}
+```
+
+类实现接口
+
+```ts
+class Dog extends Animals implement WisdomShow{
+  type:string = '狗'
+  //计算
+  calculate(){}
+  //跳舞
+  dance(){}
+}
+
+class Lion extends Animals implement FireShow{
+  type:string = '狮子'
+  singleFire(){}
+  doubleFire(){}
+}
+
+class Tiger extends Animals implement FireShow{
+  type:string = '老虎'
+  singleFire(){}
+  doubleFire(){}
+}
+
+class Monkey extends Animals implement BalanceShow{
+  type:string = '猴子'
+  //平衡
+  singlePlankBridge(){}
+  //钢丝
+  wireWalking(){}
+}
+
+const animals:Animals[] = [
+  new Dog('二狗',1),
+  new Monkey('悟空',5),
+  new Lion('狮子王',8),
+  new Tiger('王老虎',6)
+]
+```
+
+### 类型保护函数
+
+通过调用该函数，会触发TS的类型保护
+
+书写类型保护函数时，判断某个对象是不是某个接口（类）的时候，这个对象不需要具体的类型，是object类型就可以
+
+```ts
+function hasFireShow(ani:object):ani is FireShow{
+  if((ani as FireShow).singleFire && (ani as FireShow).doubleFire){
+    return true
+  }
+  return false
+}
+
+
+animals.forEach(a=>{
+  //a: Animals & FireShow
+  if(hasFireShow(a)){
+    a.singleFire()
+    a.doubleFire()
+  }
+})
+```
+
+## 索引器
+
+格式：`对象[值]`
+
+在类中，索引器需要写在类的最顶端位置
+
+在TS中，默认情况下，不对索引器做严格的类型检查
+
+使用配置`noImplicitAny`开启对隐式any的检查
+
+```ts
+let User: {
+  name:string
+  age:number
+  gender: 'male'|'female'
+  [prop:string]: string|number|object
+}
+
+User['favor'] = ['football','music']
+```
+
+默认情况下，TS不允许**动态**给类增加成员
+
+```ts
+class User {
+  [prop:string]: string|number|object
+  constructor(public name:string,public age:number){}
+}
+
+const ben = new User('ben',22)
+//动态增加属性
+ben["favor"] = ['music','movie']
+```
 
 
 
+## this指向约束
+
+```ts
+const ben = {
+  name: 'ben',
+  age: 22,
+  sayHello(){
+    //this:any
+    console.log(this.name,this.age)
+  }
+}
+
+const benFn = ben.sayHello
+benFn()//this指向windows
+
+
+class User {
+  constructor(public name:string,public age:number){
+    
+  }
+  sayHello(){
+    //this:User
+    console.log(this.name,this.age)
+  }
+}
+const b1 = new User()
+const b1Fn = b1.sayHello
+//在class中使用的是严格模式，在用非对象调用方法时，this指向undefined
+b1Fn()//this指向undefined
+```
 
 
 
+配置`noImplicitThis`开启对隐式this的检查，当检查到this是any类型会报错
+
+> 在TS中允许在书写函数时，手动声明函数中this的指向，将this作为函数的第一个参数，该参数只是用于约束this，并不是正真的函数参数，不会出现在编译结果中；参数可以写在this的后面
+
+```ts
+interface User{
+  name:string
+  age:number
+  //this并非是函数的参数
+  sayHello(this:User):void
+}
+
+const ben:User = {
+  name:'ben',
+  age: 23,
+  sayHello(){
+    //this指向User
+  }
+}
+
+const benFn = ben.sayHello
+benFn()//报错
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class User {
+  constructor(public name:string,public age:number){
+    
+  }
+  sayHello(this:User){
+    console.log(this.name,this.age)
+  }
+}
+```
 
 
 
