@@ -397,7 +397,7 @@ b1Fn()//this指向undefined
 
 > 在TS中允许在书写函数时，手动声明函数中this的指向，将this作为函数的第一个参数，该参数只是用于约束this，并不是正真的函数参数，不会出现在编译结果中；参数可以写在this的后面
 
-```ts
+```ts:{5,25}
 interface User{
   name:string
   age:number
