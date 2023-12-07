@@ -182,11 +182,11 @@ class MyPromise{
         // 2.后续处理是无错的，可能是普通对象或者是一个promise对象
         const result = executor(this._value)
         if(isPromise(result)){
-          // 2.1 是一个promise对象，新任务的状态和数据与该任务对象一致
+          // 2.1 是一个promise对象，新任务的状态和数据与该promise任务对象一致
           result.then(resolve,reject)
         }else{
           // 2.2 有普通对象，则新任务的状态为完成，数据和后续一致
-          resolve(result)
+          resolve(result)  
         }
       } catch (error) {
         // 3.有后续处理，后续处理是有错的，则新任务的状态为失败，数据是异常
@@ -225,3 +225,12 @@ setTimeout(()=>{
 
 ```
 
+## 总结
+
+`then`函数是把then的回调函数加入到队列中（微队列），等待**状态**确定为settled（fulfilled、rejected）状态，才会执行
+
+多次调用then函数传入回调函数，会将回调函数加入到队列中，等待状态确定，一次执行队列的所有回调函数
+
+在状态变为确认状态或者调用then函数，都会触发执行队列
+
+then的回调函数如果不是一个函数，则状态与前一个then的状态保持一致
