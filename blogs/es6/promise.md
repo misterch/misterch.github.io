@@ -184,11 +184,11 @@ class MyPromise{
         // 2.后续处理是无错的，可能是普通对象或者是一个promise对象
         const result = executor(this._value)
         if(isPromise(result)){
-          // 2.1 是一个promise对象，新任务的状态和数据与该任务对象一致
+          // 2.1 是一个promise对象，新任务的状态和数据与该promise任务对象一致
           result.then(resolve,reject)
         }else{
           // 2.2 有普通对象，则新任务的状态为完成，数据和后续一致
-          resolve(result)
+          resolve(result)  
         }
       } catch (error) {
         // 3.有后续处理，后续处理是有错的，则新任务的状态为失败，数据是异常
@@ -229,10 +229,10 @@ setTimeout(()=>{
 
 ## 总结
 
-Promise函数接收一个回调函数，返回一个Promise对象
+`then`函数是把then的回调函数加入到队列中（微队列），等待**状态**确定为settled（fulfilled、rejected）状态，才会执行
 
-回调函数：调用Promise函数就会执行回调函数，回调函数是同步的，回调函数一般是含有异步代码
+多次调用`then`函数传入回调函数，会将回调函数加入到队列中，等待状态确定，一次执行队列的所有回调函数
 
-返回对象：回调执行完后返回一个任务对象，任务对象是异步的，等待异步代码完成；完成后会修改对象状态并执行任务队列
+在状态变为确认状态或者调用then函数，都会触发执行队列
 
-任务队列：在resolve调用时会执行一次任务队列，在then函数中会执行一次任务队列，then函数也返回一个promise对象
+`then`的回调函数如果不是一个函数，则状态与前一个`then`的状态保持一致
