@@ -84,43 +84,74 @@ Javascript执行所有同步代码后，就会进入到事件循环（Event Loop
 - MutationObserver
 
 ```js
- console.log('script start')
-    async function async1(){
-      console.log('async1 start')
-      await async2()
-      console.log('async1 end')
-    }
-    async function async2(){
-      console.log('async2')
-    }
-    async1()
-    new Promise(resolve=>{
-        console.log('promise1 start')
-        resolve()
-        console.log('resolve1 end')
-      }).then(res=>{
-        console.log('recive resolve1')
-      })
-    setTimeout(()=>{
-      console.log('setTimeout start')
-      new Promise(resolve=>{
-        console.log('promise start')
-        resolve()
-        console.log('resolve end')
-      }).then(res=>{
-        console.log('recive resolve')
-      })
-      console.log('setTimeout end')
-    },0)
-    new Promise(resolve=>{
-        console.log('promise2 start')
-        resolve()
-        console.log('resolve2 end')
-      }).then(res=>{
-        console.log('recive resolve2')
-      })
-    console.log('script end')
-    // script start,async1 start,async2,p1s,r1e,p2s,r2e,script end,async1 end,rr1,rr2,setTimeout start,ps,re,setTimeout end,rr
+//1.同步执行输出script start
+console.log('script start')
+async function async1(){
+  //2.同步执行输出async1 start
+  console.log('async1 start')
+  //遇到await执行后面的函数async2
+  //await 下面的代码等待async2完成后执行，放入到微任务等待下一轮
+  await async2()
+  //事件循环开始，执行微任务
+  //9.async2 end
+  console.log('async2 end')
+  //10.async1 end
+  console.log('async1 end')
+}
+async function async2(){
+  //3.执行输出async2
+  console.log('async2')
+}
+//同步执行async1
+async1()
+new Promise(resolve=>{
+    //4.同步执行输出promise1 start
+    console.log('promise1 start')
+  	//加入到微任务
+    resolve()
+  	//5.同步执行输出resolve1 end
+    console.log('resolve1 end')
+  }).then(res=>{
+  	//10.recive resolve1
+    console.log('recive resolve1')
+  })
+//加入到宏任务
+//等待第一次微任务队列清空
+//【11.recive resolve2】后微任务队列清空，开始执行一个宏任务
+setTimeout(()=>{
+  //12.setTimeout start
+  console.log('setTimeout start')
+  new Promise(resolve=>{
+    //13.promise start
+    console.log('promise start')
+    //加入到微任务，等待第二次微任务队列执行
+    resolve()
+    //14.resolve end
+    console.log('resolve end')
+  }).then(res=>{
+    //执行第二次微任务队列
+    //16.recive resolve
+    console.log('recive resolve')
+  })
+  //宏任务执行完毕，开始下一轮事件循环，执行第二次微任务队列
+  //15.setTimeout end
+  console.log('setTimeout end')
+},0)
+new Promise(resolve=>{
+  	//6.同步执行输出promise2 start
+    console.log('promise2 start')
+  	//加入到微任务
+    resolve()
+  	//7.同步执行输出resolve2 end
+    console.log('resolve2 end')
+  }).then(res=>{
+ 		//11.recive resolve2
+    console.log('recive resolve2')
+  })
+//8.同步执行输出script end
+//同步代码在第8步这里执行完毕，开始事件循环
+console.log('script end')
+// script start,async1 start,async2,p1s,r1e,p2s,r2e,script end,async2 end,async1 end,rr1,rr2,setTimeout start,ps,re,setTimeout end,rr
 ```
 
 [JS Visualizer 9000 (jsv9000.app)](https://www.jsv9000.app/)

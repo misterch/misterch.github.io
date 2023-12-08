@@ -6,6 +6,7 @@ categories:
  - ecmascript
 tags:
  - 装饰器
+ - AOP
 ---
 :::warning
 是一项实验性特性，未来版本可能会发生改变
@@ -333,3 +334,71 @@ class A {
 
 
 ### 参数装饰器
+
+前端用处不大，比较少用
+
+依赖注入，依赖倒置
+
+函数有三个参数
+
+1. 静态方法：类本身；实例方法：类的原型
+2. 方法名称
+3. 在参数列表中的索引
+
+```ts
+class MyMath {
+  sum(a:number,@test b:number){
+    return a+b
+  }
+}
+
+function test(target:any,method:string,index:number){
+  //MyMath,sum,1
+  console.log(target,method,index)
+}
+```
+
+
+
+## 一些有用的库
+
+`reflect-metadata`：可以很方便地添加元数据
+
+使用该库并开启`emitDecoratoreMedadata`，在TS编译结果中会将约束的类型作为元数据加入到相应位置，这样TS的类型检查就可以在**运行时**执行
+
+`class-validator`：可以使用装饰器给属性添加验证规则，使用验证函数对属性进行验证
+
+`class-transformer`：可以将一个平面对象（例如是服务器返回的一个用户数组对象），利用一个类将其转化成该类的对象，然后就可以使用该类上面的方法
+
+## AOP
+
+AOP：面向切面编程，是一种编程方式，属于面向对象开发
+
+将一些在业务中共同出现的功能块，横向切分，以达到分离关注点的目的
+
+```ts
+class RegUser{
+  @规则
+  usename:string
+  @规则
+  pwd:string
+  @规则
+  gender:'male'|'female'
+  @规则
+  age:number
+  save():boolean{
+    //save只处理保存到数据库
+    //但是在保存之前需要对数据进行验证
+    if(validate(this)){
+      //save
+    }
+  }
+}
+
+//将验证逻辑从RegUser分离出来，形成一个公共函数，这样无论对RegUser还是其他类型，都可以使用
+//是一个复杂的验证逻辑业务的横切面，只做验证这个业务，形成单独模块，达到分离关注点的目的
+function validate(formData){
+  //...
+}
+```
+

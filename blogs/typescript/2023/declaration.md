@@ -7,11 +7,101 @@ tags:
  - 声明文件
 ---
 
-## 声明文件模块
+## 声明文件
+
+以`.d.ts`为后缀的文件是声明文件，为**js代码**提供类型声明，使用时得到类型提示
+
+## 声明文件的位置
+
+### include包含的目录
+
+`tsconfig.json`中只要`include`配置了目录，那么该目录下的声明文件就会生效
+
+### 手动配置
+
+配置`tsconfig.json`中的`typeRoots`，告诉它声明文件的目录在哪里
+
+:::tip
+
+如果配置了`typeRoots`，那么`include`和`node_modules/@types`就会失效
+
+解决：`typeRoots:['node_modules/@types','./types','./src']`
+
+:::
+
+### node_modules/@types
+
+### 与JS代码所在目录相同，文件名也相同的文件
+
+这时使用typescript书写的工程发布后的格式
+
+```
+-|src
+		index.js
+		index.d.ts
+		header.js
+		header.d.ts
+```
+
+## 编写声明文件
+
+### 自动生成
+
+工程使用typescript开发的，编译后的是javascript文件，如果可以让别人使用，同时可以**获得类型检查**，还需要配置`tsconfig.json`的`compilerOptions.declaration:true`编译生成声明文件
+
+### 手动编写
+
+1. 对已有的库，库是使用javascript编写的，可以手动为该库编写声明文件
+2. 对第三方库，使用javascript编写，并且第三方库没有提供声明文件，可以手动为该库编写声明文件
+
+## 手动编写
+
+### 全局声明
+
+**没有顶层import、export**的文件认为是一般脚本，运行在**global** scope上，顶层定义的变量、函数、类都存在于**全局作用域上，外部模块和脚本都可访问**
+
+```ts
+interface Console {
+  log(message?:any):void
+  error(errMsg?:any):void
+}
+declare const console:Console
+```
+
+### 模块声明
+
+例如使用lodash这个第三方库，这是一个适用js编写的库，没有类型提示，我们可以手动为这个模块编写声明文件
+
+```ts
+//lodash.d.ts
+declare module 'lodash' {
+  export function chunk<T>(array:T[],size:number):T[][]
+}
+```
+
+编写后，在使用lodash这个库时，系统就会查找到lodash的声明文件，声明文件无需导入
+
+:::tip
+
+手动为第三方库编写的声明文件，如果在开发时使用了`ts-node`来执行ts文件会出现找不到声明文件的错误，因为`ts-node`会忽略`tsconfig.json`的`files`、`include`、`exclude`
+
+解决：
+
+```json
+{
+  "compilerOptions": {
+    "typeRoot": ["./node_modules/@types","./types"]
+  }
+}
+```
+
+:::
+
+### 模块文件
+
+以`.ts`为后缀的文件
 
 typescript中规定***顶层*存在import、export关键字**的代码文件被认为是一个模块
-
-顶层
 
 如果想要达到类型提示，则需要导入声明文件模块
 
@@ -29,31 +119,7 @@ export interface Test {
   name: string
   arr: Friend[]
 }
-
 ```
-
-以下属于脚本，无需引入即可使用，**export**并非在顶层中
-
-```ts{2,8}
-declare module TestModule {
-  export interface Friend {
-    name: string
-    male: 'male' | 'female'
-    job: string
-    age: number
-  }
-  export interface Test {
-    name: string
-    arr: Friend[]
-    attr: AttrValue
-  }
-}
-
-```
-
-## 声明文件脚本
-
-**没有顶层import、export**的文件认为是一般脚本，运行在**global** scope上，顶层定义的变量、函数、类都存在于**全局作用域上，外部模块和脚本都可访问**
 
 ## 声明文件的来源
 
@@ -173,6 +239,19 @@ declare module 'moment' {
 ### **依赖**一个全局变量的声明文件
 
 当我们需要依赖一个全局变量的声明文件时，由于全局变量不支持通过 `import` 导入，当然也就必须使用三斜线指令来引入了
+
+### 声明文件不在TS编译的目录
+
+无论这个声明文件是全局声明文件还是模块声明文件，因为不在`tsconfig.json`所配置的编译目录下，所以不会找到这个声明文件。
+
+如果要使用这个声明文件，可以在TS能够编译的目录中的声明文件中使用///三斜杠命令将其加载进来
+
+```ts
+// ./src/index.d.ts
+/// <reference path="../lodash.d.ts">
+```
+
+
 
 ### `/// <reference path="" />`
 
