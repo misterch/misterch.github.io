@@ -1,10 +1,10 @@
 ---
-title: webpack编译结果分析
+title: 【webpack核心】编译结果分析
 date: 2023-12-13
 categories:
  - webpack
 tags:
- - 原理
+ - 核心原理
 ---
 
 ## 以对象方式构建模块
