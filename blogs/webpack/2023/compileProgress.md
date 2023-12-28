@@ -73,7 +73,7 @@ webpack会根据配置为chunk生成一个资源列表，即`chunk assets`，资
 
 将多个chunk的assets合并到一起，并产生一个总的hash
 
-![](/imgs/2020-01-09-12-47-43.png)
+![](imgs/2020-01-09-12-47-43.png)
 
 ## 输出
 
@@ -87,11 +87,11 @@ webpack利用node的fs模块，根据编译产生的总的assets，生成相应�
 
 ## 总结
 
-1. module是模块，是分割的代码单元，是一个文件，webpack模块可以是任何内容的文件，不单是JS
-2. chunk是webpack内部构建模块的块，一个chunk中包含多个模块，这些模块是从入口模块通过依赖分析得来
-3. bundle是chunk构建好模块后生成chunk的资源清单，清单中的每一项就是一个bundle，bundle就是最终生成的文件
+1. `module`是模块，是分割的代码单元，**是一个文件**，webpack模块可以是任何内容的文件，不单是JS
+2. `chunk`是webpack内部构建模块的块，**一个chunk中包含多个模块**，这些模块是从入口模块通过依赖分析得来
+3. `bundle`是chunk构建好模块后生成chunk的资源清单，**清单中的每一项就是一个bundle**，bundle就是最终生成的文件
 4. 根据入口可配置多个入口模块，就会生成多个chunk资源清单
-5. hash是根据资源清单所有内容联合生成的hash值
-6. chunkhash是每个chunk生成的资源清单内容联合生成的hash值
-7. chunkname是chunk的名称，默认是main
+5. `hash`是根据资源清单所有内容联合生成的hash值
+6. `chunkhash`是每个chunk生成的资源清单内容联合生成的hash值
+7. `chunkname`是chunk的名称，默认是main
 8. id是每个chunk的唯一编号，开发构建id和chunkname相同，生成环境下构建会从数字0开始进行编号
