@@ -189,3 +189,8 @@ place-items是垂直对齐和水平对齐的简写
 ```
 
 ![](../imgs/6.jpg)
+
+## 参考
+
+1. 渡一教育--技术提升--HTML CSS语言提升--CSS3布局
+2. [CSS Grid 网格布局教程 - 阮一峰的网络日志 (ruanyifeng.com)](https://ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)

@@ -275,6 +275,13 @@ module.exports = {
       "options": {
         "parser": "html"
       }
+    },
+    //以vue解析器解析nvue文件
+    {
+      "files": "*.nvue",
+      "options": {
+        "parser": "vue"
+      }
     }
   ]
 }
@@ -408,6 +415,12 @@ ESLint和Prettier都可以对代码进行格式化
 
 ```js
 module.export = {
+  env: {
+    browser: true,
+    es2021: true,
+    //解决defineEmits、defineProps等宏报错
+    'vue/setup-compiler-macros': true,
+  }
   // 继承的规则，用来检测代码质量和格式化代码
   extends:[
     "eslint:recommended",
@@ -488,3 +501,5 @@ module.export = {
 [vue-eslint-parser: 用于 .vue文件的ESLint自定义解析器。 - 我爱学习网 (5axxw.com)](https://www.5axxw.com/wiki/content/pu4u1a)
 
 [Eslint 核心概念 &amp; 自定义 plugin 开发 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/486351487)
+
+[实现在 VSCode 中无痛开发 nvue：语法高亮、代码提示、eslint 配置及插件Patch - 掘金 (juejin.cn)](https://juejin.cn/post/7233196954402373690#heading-7)
