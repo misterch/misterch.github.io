@@ -2,7 +2,7 @@
 title: Vue中动态引入图片为什么要用require
 date: 2023-09-06
 categories:
- - Vue
+ - vue
  - 面试
 tags:
  - require

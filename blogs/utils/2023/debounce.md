@@ -8,9 +8,11 @@ tags:
 ---
 ## 节流
 
-> 持续触发，但不会持续执行，只会在一个时间段内执行一次
+> 对于高频操作，可以设定出发频率，让本来会执行很多次的事件触发，按照设定的频率减少触发的次数
 >
 > 规定时间内，有新的触发产生，除非之前的操作执行完，否则新的触发无效
+>
+> 例如：页面滚动处理事件，搜索框输入联想
 
 ### 第一次延迟执行
 
@@ -33,11 +35,10 @@ function throttle(fn, delay) {
 }
 
 // 使用
-function clickHandler() {
+function scrollHandler() {
     console.log('节流click!');
 }
-const handler = throttle(clickHandler);
-document.getElementById('button').addEventListener('click', handler);
+window.onscroll = throttle(scrollHandler)
 
 ```
 
@@ -49,38 +50,59 @@ document.getElementById('button').addEventListener('click', handler);
 function throttle(fn,delay){
   let time
   return function(){
+    const self = this
   	if(!time || Date.now()-time >= delay){
-			fn.apply(null,arguments)
+			fn.apply(self,arguments)
     	time = Date.now()
   	} 
   }
 }
+
+// 使用
+function scrollHandler() {
+    console.log('节流click!');
+}
+window.onscroll = throttle(scrollHandler)
 ```
 
 
 
 ## 防抖
 
-> 只执行最后一个被触发的，清除之前的异步任务，核心在于**清零**。
-> 例如： 页面滚动处理事件，搜索框输入联想
-> **最后一次有效**
+> 对于高频操作来说，只希望执行一次，可以设定第一次或者最后一次，核心在于**清零**。
+> 例如： 点击事件
+> **连续点击只有一次有效**
 >
 > 规定时间内，只要有新的触发产生，取消之前的操作，重新计时执行触发的操作
 
-```javascript:{3,8-12}
+```javascript
 // 防抖
-function debounce(fn, delay) {
+function debounce(fn, delay, immediate) {
+		if(typeof fn !== 'function') throw new Error('handle must be a function')
+  	if(typeof delay === 'undefined') delay = 300
+  	if(typeof delay === 'boolean'){
+      immediate = delay
+      delay = 300
+    }
+  	if(typeof immediate === 'boolean') immediate = false
+  	
     var timer = null;
-    // 利用闭包，返回的函数拥有debounce函数作用域(VO)的引用
-    return function () {
-        var that = this;
+    // 利用闭包，返回的函数拥有debounce函数作用域(VO)的引用，timer是VO的变量
+    return function (...args) {
+        var self = this;
         //在这里获取的函数参数
-        var args = arguments;
-        clearTimeout(timer);// 清除重新计时
-        timer = setTimeout(function () {
-        		//不能在这里使用arguments获取参数，因为这里的函数是setTimeout的回调函数，不是debounce函数执行返回的函数，返回的函数才是用户调用的，调用函数可以传递参数给fn使用
-            fn.apply(that, args);
-        }, delay || 500);
+        //var args = arguments;
+      	let init = immediate && !timer
+        clearTimeout(timer)
+      	timer = setTimeout(function () {
+          	//不能在这里使用arguments获取参数，因为这里的函数是setTimeout的回调函数，不是debounce函数执行返回的函数，返回的函数才是用户调用的，调用函数可以传递参数给fn使用
+						timer = null
+            !immediate?fn.call(self,...args):null
+        }, delay)
+      	//如果immediate是true，就表示立即执行
+      	//如果想要实现只在第一次执行，那么就要设置timer为null作为判断
+      	//因为只要timer为null就意味着没有第二次点击
+      	init?fn.call(self,...args):null
     };
 }
 
