@@ -21,33 +21,65 @@ tags:
 
 ### ESLint中的核心概念
 
+#### env
+
+根据不同环境，eslint判断某些全局成员是否可用，避免在代码中使用不存在的成员
+
+| 环境    | 说明                                                         |
+| ------- | ------------------------------------------------------------ |
+| browser | 浏览器环境中的全局变量                                       |
+| node    | 全局变量和node.js作用域                                      |
+| es6     | 开启除了modules以外的所有ecmascript6特性，会自动设置ecmaVersion解析器选项为6 |
+
+
+
 #### parser
 
 将代码转换为 eslint 能理解的 AST 语法树。
 
 parser是解析器，其功能对应编译原理中的词法分析、语法分析。
 
-#### parserOptions
+#### parserOptions解析器配置
+
+##### ecmaVersion
+
+影响的只是语法**检测**，不代表一些语法是否可用，需要根据**env**来定义
+
+##### sourceType
+
+可选项有`script`和`module`，当设置`module`时，`ecmaVersion`不能低于2015版本
 
 #### plugins
 
 eslint本身有些规则，但无法包含所有规则，因此eslint支持自定义规则，针对某种语法自定义的那些规则称之为eslint插件
 
-注意！！！`plugins`提供了检查和修复能力，但只是加载了插件，引入了额外自定义的 `rules`，但并没有将这些规则应用上，需要配置 `extends`或者 `rules`才能够应用规则
+:bangbang:  注意`plugins`提供了检查和修复能力，但只是加载了插件，引入了额外自定义的 `rules`，但并没有将这些规则应用上，需要配置 `extends`或者 `rules`才能够应用规则
 
 一般插件命名为：`eslint-plugin-xxx`
 
 在配置插件时，一般会省略eslint-plugin，如 `eslint-plugin-vue`，配置时只需写vue就可
 
+#### rules
+
+可以单独设置某些规则
+
+如果需要使用某些eslint插件中的规则，可以先在`plugins`中配置插件，然后在`rules`中使用插件中的规则
+
+例如安装`eslint-plugin-react`，配置`plugin:['react']`，再配置`'rules':{'react/jsx-uses-react': 2}`
+
 #### extends
 
-extends可以看成是一个个配置方案的最佳实践，里面是别人配置好了的eslint规则配置
+extends可以看成是一个配置方案的最佳实践，里面是别人配置好了的eslint规则配置，通过extends来继承别人的配置
 
 如果规则冲突，位置靠后的覆盖前面的
 
 一般命名为： `eslint-config-`开头
 
-配置 `extends`时，可以省略 `eslint-config-`，如果是插件中的config，则写成 `plugin:plugin-name/config-name`
+配置 `extends`时，可以省略 `eslint-config-`
+
+如果是插件中的config，则写成 `plugin:plugin-name/config-name`
+
+例如`eslint-plugin-react`这是eslint插件，里面有导出预设config，无需再`plugins`中引入插件，直接在`extends`中使用该插件的config，这样配置`plugin:react/recommended`
 
 #### overrides
 

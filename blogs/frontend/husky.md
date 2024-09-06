@@ -373,7 +373,7 @@ npm7+执行install命令时，按照顺序依次执行对应的命令：
 pnpm run format && git add .
 ```
 
-这里的意思是在commit前先执行 `pnpm run format`，格式化代码，**但没有提交到暂存库中**，需要git add .将格式化后的代码再提交一次（使用[lint-staged](#配置lint-staged)解决这个问题）
+这里的意思是在commit前先执行 `pnpm run format`，格式化代码，**但没有提交到暂存库中**，需要`git add .`将格式化后的代码再提交一次（使用[lint-staged](#配置lint-staged)解决这个问题）
 
 #### commit-msg钩子
 
@@ -389,14 +389,14 @@ pnpm run format && git add .
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run commitlint
+npx --no-install commitlint --edit "$1"
 ```
 
 ## 配置lint-staged
 
 提交代码的时候，我们只希望对提交的部分代码进行lint检查，而不影响其他代码，这时就需要使用lint-staged工具
 
-这个工具一般结合husky一起使用，它能够让husky的hook触发的命令只作用于git add到暂存区的文件
+这个工具一般结合husky一起使用，它能够让husky的hook触发的命令**只作用于git add到暂存区的文件**
 
 安装 `pnpm add lint-staged -D`
 
@@ -434,3 +434,7 @@ npm run lint-staged
 [前端团队规范——husky + lint-staged 构建代码检查工作流（兼容Sourcetree） - 掘金 (juejin.cn)](https://juejin.cn/post/7256975111563100217)
 
 [lint-staged 使用教程 - 较瘦 - 博客园 (cnblogs.com)](https://www.cnblogs.com/jiaoshou/p/12250278.html)
+
+美化commit内容[采用 cz-customizable 规范代码提交信息 - 掘金 (juejin.cn)](https://juejin.cn/post/7243311106684862521)
+
+美化commit和CHANGELOG内容[第六章-git commit的提交规范+commit-message+changlog - 掘金 (juejin.cn)](https://juejin.cn/post/7257182484046643258)
