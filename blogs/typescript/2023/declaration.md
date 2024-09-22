@@ -33,7 +33,7 @@ tags:
 
 ### 与JS代码所在目录相同，文件名也相同的文件
 
-这时使用typescript书写的工程发布后的格式
+这是使用typescript书写的工程发布后的格式
 
 ```
 -|src
@@ -76,10 +76,39 @@ declare const console:Console
 //lodash.d.ts
 declare module 'lodash' {
   export function chunk<T>(array:T[],size:number):T[][]
+  export const camelCase:(val:string)=>string
 }
 ```
 
-编写后，在使用lodash这个库时，系统就会查找到lodash的声明文件，声明文件无需导入
+编写后，在使用lodash这个库时，只要该声明文件包含在tsconfig.json配置的声明文件所在目录，系统就会查找到lodash的声明文件，声明文件无需导入
+
+```ts
+import {chunk,camelCase} from 'lodash'
+```
+
+如果要导出lodash对象，那么声明文件需要这么写
+
+```ts
+//lodash.d.ts
+declare module 'lodash' {
+  interface Lodash {
+     chunk: <T>(array:T[],size:number)=>T[][],
+  	 camelCase: (val:string)=>string
+  }
+  const lodash:Lodash
+  export default Lodash
+}
+
+//或者
+declare module 'lodash' {
+  export function chunk<T>(array:T[],size:number):T[][]
+  export const camelCase:(val:string)=>string
+  export default {
+    chunk，
+    camelCase
+  }
+}
+```
 
 :::tip
 
@@ -96,6 +125,26 @@ declare module 'lodash' {
 ```
 
 :::
+
+#### 为文件类型定义声明文件
+
+```ts
+//声明png文件类型
+declare module '*.png' {
+  const url: string
+  export default url
+}
+
+//声明Vue文件类型
+declare module '*.vue' {
+  import { DefineComponent } from 'vue'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+  const component: DefineComponent<{}, {}, any>
+  export default component
+}
+```
+
+
 
 ### 模块文件
 
