@@ -63,7 +63,9 @@ const objProxy2 = new Proxy(obj,{
     return Reflect.get(target,key,receiver)
   }
 })
-objProxy2.foo //this指向receiver，即objProxy2，输出即objProxy2代理对象，this.bar访问的是objProxy2中的bar，所以输出'value - bar'
+//this指向receiver，即objProxy2，输出即objProxy2代理对象
+//this.bar访问的是objProxy2中的bar，所以输出'value - bar'
+objProxy2.foo
 ```
 
 ## reactive的实现
