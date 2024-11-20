@@ -110,6 +110,7 @@ class MyPromise{
     }
     this._value = data
     this._state = state
+    // 状态变化，执行队列
     this._runHandlers()
   }
   /**
@@ -136,6 +137,7 @@ class MyPromise{
     return new MyPromise((resolve,reject) =>{
       this._pushToQueue(onFullfilled,FULLFILLED,resolve,reject)
       this._pushToQueue(onRejected,REJECTED,resolve,reject)
+      // 调用then时，状态已经确定，执行队列
       this._runHandlers()
     })
   }
