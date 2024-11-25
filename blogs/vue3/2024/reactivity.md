@@ -167,7 +167,7 @@ function track(target,key){
   }
   let deps = depsMap.get(key)
   if(!deps){
-    depsMap.set(key,(dep = new Set()))
+    depsMap.set(key,(deps = new Set()))
   }
   deps.add(activeEffect)
 }
@@ -253,7 +253,7 @@ function track(target,key){
   }
   let deps = depsMap.get(key)
   if(!deps){
-    depsMap.set(key,(dep = new Set()))
+    depsMap.set(key,(deps = new Set()))
   }
   deps.add(activeEffect)
 }
@@ -371,7 +371,7 @@ function computed(getter){
 1. ref可以把基本数据类型转换成响应式对象
 2. ref返回的对象，**重新赋值成对象仍然是响应式的**
 3. reactive返回的对象，**重新赋值丢失响应性**
-4. reactive返回的对象不可以结构，丢失响应性
+4. reactive返回的对象不可以解构，丢失响应性
 
 
 
