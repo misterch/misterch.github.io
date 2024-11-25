@@ -1,0 +1,1 @@
+const t=JSON.parse('{"key":"v-1cc3459e","path":"/tags/zishiyingbuju/1/","title":"","lang":"en-US","frontmatter":{"layout":"Categories"},"headers":[],"git":{},"filePathRelative":null}');export{t as data};
