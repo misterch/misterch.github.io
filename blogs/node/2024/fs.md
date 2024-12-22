@@ -292,8 +292,6 @@ fs.open('a.txt','r',(err,rfd)=>{
 
 ### read
 
-createReadStream()
-
 ### write
 
 createWriteStream()
@@ -318,3 +316,9 @@ watch()
 写入
 
 删除
+
+
+
+## 参考
+
+拉勾大前端高薪训练营--Node全栈开发--模块一--核心模块
