@@ -4,6 +4,8 @@ date: 2024-12-31
 tags:
  - buffer
  - base64
+ - TextEncoder
+ - TextDecoder
  - 字符编码
 ---
 
@@ -137,6 +139,8 @@ console.log(decoded); // 输出: Hello
 
 将Buffer转换为ASCII编码格式的字符串
 
+`Uint8Array`中，每项最大能储存**2^8=256**种状态，刚好能储存整个ASCII字符集
+
 ```js
 //创建长度为3的Uint8Array数组,用来模拟二进制数据
 const buf = new Uint8Array(3)
@@ -180,18 +184,35 @@ String.fromCharCode(...buf) //123
   使用`TextEncoder`和`TextDecoder`
 
 ```javascript
-const encoder = new TextEncoder()
-const decoder = new TextDecoder()
-//将utf-8字符串编码成Buffer
-const buffer = encoder.encode('你好')
-//base64编码
-const base64 = btoa(String.fromCharCode(...buffer))
+function encodeBase64(str){
+  const encoder = new TextEncoder()
+	//将utf-8字符串编码成Buffer
+  // Uint8Array([228,189,160,229,165,189])
+	const arrayBuffer = encoder.encode(str)
+  // 接收多个unicode值，返回unicode编码的字符，也可以说是ascii字符
+  // 228->ä, 189->½
+  const ascii = String.fromCharCode(...arrayBuffer)
+	//base64编码
+	const base64 = btoa(ascii)
+  return base64
+}
 
+function decodeBase64(base64){
+  // 将base64解码成ascii字符
+  const ascii = atob(base64)
+  // 将ascii字符串一一对应字符的ascii码值
+  const asciiArr = [...ascii].map(c=>c.charCodeAt(0))
+  // 将数组转换成Uint8Array
+  const buffer = new Uint8Array(asciiArr)
+  const decoder = new TextDecoder()
+  const str = decoder.decode(buffer)
+  return str
+}
 //解码，将base64编码解码成原始数据
 const base64ToBuffer = new Uint8Array([...])
 ```
 
-
+`Uint8Array`每项可以表示1字节的数据，而ASCII字符集的每个字符等于1字节，所以`Uint8Array`的每项可以一对一表示一个ASCII字符，转换成base64时不会产生非ASCII字符集转换错误问题
 
 ## 总结
 
@@ -199,6 +220,11 @@ const base64ToBuffer = new Uint8Array([...])
 2. ASCII直接表示字符，Base64表示二进制数据的编码形式
 3. Base64编码结果完全有ASCII字符组成
 4. 非ASCII字符需通过字符集转为二进制，再Base64编码
+5. `Uint8Array`每项能储存**8bit（1Byte）**数据，即一个字节可以表示**2^8=256**种状态
+6. 标准ASCII字符集包含128个字符，直范围0到127（00000000-01111111）；拓展ASCII包含剩下的128个拓展字符
+7. ASCII每个字符占用1字节（8bit），而`Uint8Array`每位也是储存1字节数据，因此`Uint8Array`可以一对一表示ASCII字符集
+
+## 参考
 
 [Base64编码对照表 - JSON中文网](https://www.json.cn/document/base64/)
 
