@@ -1,5 +1,5 @@
 ---
-title: 二进制转换成base64
+title: 二进制转换成base64(中文转base64)
 date: 2024-12-31
 tags:
  - buffer
@@ -60,7 +60,70 @@ var u8 = new Int8Array(4arr)
 
 [ASCII码](https://tool.oschina.net/commons?type=4)一共规定了128个字符的编码（无符号正整数，二进制第一位始终为0），比如空格`SPACE`是32（二进制`00100000`），大写字母`A`是65（二进制`01000001`）。
 
-### 将Buffer转换成字符
+每个字符占1个字节
+
+## Base64
+
+定义：Base64是一种二进制到文本的编码方案，将任意二进制数据转换为由64个可打印ASCII字符组成的字符串
+
+用途：通常用于文本协议（HTTP、JSON）中安全传输二进制数据
+
+特点：
+
+- 每3字节二进制数据（即3*8=24bit）被编码成4个Base64字符（每个字符占6位）
+- 若原始数据长度不足3字节，会用`=`填充
+
+![](https://i-blog.csdnimg.cn/blog_migrate/6bd937a20b29714171b1669cfca0d4ab.png)
+
+### 转换原理
+
+1. 将待转换的字符串**每三个字节为一组**，每个字节8bit，总共24bit二进制位（6和8最小公倍数为24）
+2. 将24个二进制位**每6个一组**（从左往右分），共分为4组
+3. 每组前面添加**两个0**，每组6个变为8个二进制位，共32个二进制位，即**4个字节**
+4. 根据Base64编码对照表获得的对应的值
+
+
+
+### btoa—编码为Base64
+
+**功能：**将**二进制字符串**（通常是ASCII或UTF-8文本）编码为Base64字符串
+
+**语法：**`btoa(stringToEncode)`
+
+```javascript
+const encoded = btoa('hello')
+console.log(encoded) //SGVsbG8=
+```
+
+**注意：**
+
+- 只能直接编码ASCII字符（如a-z、A-Z、0-9、+、/）
+
+- 如果字符串包含非 ASCII 字符（如中文、表情符号等），需先转换为 UTF-8 编码的二进制形式
+
+  ```javascript
+  btoa('你好') //报错
+  ```
+
+  
+
+### atob—解码Base64
+
+**功能**：将Base64字符串解码为原始二进制字符串
+
+**语法**：`atob(encodedStr)`
+
+```javascript
+const decoded = atob("SGVsbG8="); // "Hello"
+console.log(decoded); // 输出: Hello
+```
+
+**注意**：
+
+- 解码结果通常是ASCII或二进制字符串
+- 如果原始内容是UTF-8文本（如中文），需要进一步处理
+
+## 将Buffer转换成字符
 
 `Buffer`储存的是一组由二进制组成的数组，为方便显示使用十六进制显示
 
@@ -83,9 +146,9 @@ buf[1] = 0x32
 buf[2] = 0x33
 ```
 
-使用`String.fromCharCode()`可以传入`unicode`编码返回字符串
+使用`String.fromCharCode(code)`可以传入`unicode`编码返回字符串
 
-使用`charCodeAt()`可以获得字符串所对应的`unicode`编码
+使用`charCodeAt(str)`可以获得字符串所对应的`unicode`编码
 
 `unicode`字符集包含世界上几乎所有字符的标准字符编码系统
 
@@ -93,18 +156,50 @@ buf[2] = 0x33
 String.fromCharCode(...buf) //123
 ```
 
-## Base64
+## 处理非ASCII字符（UTF-8）
 
-![](https://i-blog.csdnimg.cn/blog_migrate/6bd937a20b29714171b1669cfca0d4ab.png)
+- Node环境
 
-### 转换步骤
+  使用`Buffer`
 
-1. 将待转换的字符串**每三个字节为一组**，每个字节8bit，总共24bit二进制位（6和8最小公倍数为24）
-2. 将24个二进制位**每6个一组**（从左往右分），共分为4组
-3. 每组前面添加**两个0**，每组6个变为8个二进制位，共32个二进制位，即**4个字节**
-4. 根据Base64编码对照表获得的对应的值
+  ```javascript
+  const str = '你好'
+  //将utf-8字符串转换成buffer
+  const buffer = Buffer.from(str)
+  // 编码
+  const base64 = buffer.toString('base64')
+  
+  // 解码
+  const decodeStr = Buffer.from(base64,'base64').toString()
+  ```
 
-```js
-btoa(String.fromCharCode(...u8)) // MTIz
+  
+
+- 浏览器环境
+
+  使用`TextEncoder`和`TextDecoder`
+
+```javascript
+const encoder = new TextEncoder()
+const decoder = new TextDecoder()
+//将utf-8字符串编码成Buffer
+const buffer = encoder.encode('你好')
+//base64编码
+const base64 = btoa(String.fromCharCode(...buffer))
+
+//解码，将base64编码解码成原始数据
+const base64ToBuffer = new Uint8Array([...])
 ```
 
+
+
+## 总结
+
+1. ASCII是字符集，Base64是编码方案
+2. ASCII直接表示字符，Base64表示二进制数据的编码形式
+3. Base64编码结果完全有ASCII字符组成
+4. 非ASCII字符需通过字符集转为二进制，再Base64编码
+
+[Base64编码对照表 - JSON中文网](https://www.json.cn/document/base64/)
+
+[ASCII码对照表，ASCII码一览表（非常详细） - C语言中文网](https://c.biancheng.net/c/ascii/)
