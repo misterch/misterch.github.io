@@ -84,7 +84,7 @@ function debounce(fn, delay, immediate) {
       immediate = delay
       delay = 300
     }
-  	if(typeof immediate === 'boolean') immediate = false
+  	if(typeof immediate !== 'boolean') immediate = false
   	
     var timer = null;
     // 利用闭包，返回的函数拥有debounce函数作用域(VO)的引用，timer是VO的变量
@@ -115,3 +115,8 @@ document.getElementById('button').addEventListener('click', handler);
 
 ```
 
+
+
+## 参考
+
+拉勾大前端高薪训练营--javascript深度剖析---ES新特性与TS、JS性能优化--JS性能优化
