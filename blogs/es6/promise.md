@@ -229,6 +229,9 @@ setTimeout(()=>{
 
 ```
 
+<iframe height="600" style="width: 100%;" scrolling="no" title="flip实现动画demo1" src="https://stackblitz.com/edit/stackblitz-starters-iwlj5qqo?file=index.js" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+</iframe>
+
 ## 总结
 
 `then`函数是把then的回调函数加入到队列中（微队列），等待**状态**确定为settled（fulfilled、rejected）状态，才会执行

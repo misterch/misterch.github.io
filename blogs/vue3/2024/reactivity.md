@@ -235,8 +235,10 @@ let activeEffect = null
 // 该函数用来执行副作用函数
 function effect(callback){
   activeEffect = callback
-  // 需要执行一遍回调函数，回调函数里面访问了响应式对象的属性，这时就可以触发依赖收集了
+  // 需要执行一遍回调函数，回调函数里面访问了【响应式对象的属性】，这时就会【触发（track）依赖收集】
+  // 回调函数就是在这时被收集进集合中
   callback()
+  // 回调函数作为依赖被收集了，收集完成后activeEffect置为null
   activeEffect = null
 }
 // 用来收集以【响应式对象】作为key，以【依赖集合depsMap】作为value的若引用weakMap
@@ -276,6 +278,26 @@ export {
   track
 }
 ```
+
+### 使用
+
+```javascript
+const personProxy = reactive({name:'ben',age:22,hobby:[11,22,33]})
+// 注册副作用函数，当personProxy中的属性发生改变，就会执行effect函数中的回调函数
+effect(()=>{
+  console.log('name发生改变了',personProxy.name)
+})
+effect(()=>{
+  console.log('我现在的名字叫做',personProxy.name)
+})
+effect(()=>{
+  console.log('hobby发生改变了',personProxy.hobby)
+})
+
+personProxy.name = 'ken' // 触发该属性的所有副作用函数
+```
+
+
 
 ## ref的实现
 

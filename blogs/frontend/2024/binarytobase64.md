@@ -214,6 +214,12 @@ const base64ToBuffer = new Uint8Array([...])
 
 `Uint8Array`每项可以表示1字节的数据，而ASCII字符集的每个字符等于1字节，所以`Uint8Array`的每项可以一对一表示一个ASCII字符，转换成base64时不会产生非ASCII字符集转换错误问题
 
+
+
+<iframe height="600" scrolling="no" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true" src='https://stackblitz.com/edit/stackblitz-starters-83v38lwz?file=index.js'></iframe>
+
+
+
 ## 总结
 
 1. ASCII是字符集，Base64是编码方案
@@ -229,3 +235,6 @@ const base64ToBuffer = new Uint8Array([...])
 [Base64编码对照表 - JSON中文网](https://www.json.cn/document/base64/)
 
 [ASCII码对照表，ASCII码一览表（非常详细） - C语言中文网](https://c.biancheng.net/c/ascii/)
+
+[Node.js中的Buffer类及字符编码 | Ben's Blog](https://misterch.github.io/blogs/node/2024/buffer.html)
+
