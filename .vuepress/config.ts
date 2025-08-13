@@ -53,9 +53,13 @@ export default defineUserConfig({
           children: ["basic","branch","merge","updatepublish","undo"]
         },
         {
+          text:"场景",
+          children: ["pullbranch","mergeTemplate"]
+        }
+        {
           text: "指令详情",
           children:["clone","checkout","restore","stash","log","reflog"]
-        }
+        },
       ],
       "/docs/interview/javascript/":[
         {

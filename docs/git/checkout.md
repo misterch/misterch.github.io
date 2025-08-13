@@ -39,3 +39,11 @@ git checkout -- <filename>
 git checkout .
 ```
 
+## 拉取指定分支
+
+需要本地分支和远程分支建立映射关系
+
+```bash
+git checkout -b <本地分支名> origin/<远程分支名>
+```
+
