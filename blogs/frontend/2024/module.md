@@ -5,179 +5,106 @@ categories:
  - 面试
 tags:
  - 模块化
+ - 原理
+ - commonjs
 ---
 
 ## Common.js
 
-### 基本数据类型
+- 模块初始化：当一个CommonJS模块首次被require时，Node.js会执行该模块的代码，创建一个`module.exports`对象，这个对象会被**缓存**起来
 
-```js
-// a.js
-let {count} = require('./b.js')
-let b = require('./b.js')
-console.log('a---load',count)
-count=22
-b.num2 = 33
-console.log('a---modifiy-count,a的修改是否会影响b导出count的值',count)
-console.log('在b对象新增属性',b)
-setTimeout(()=>{
-  console.log('观察b文件修改count是否影响a导入count的值',count)
-  console.log('b文件修改输出--modify',b)
-},1500)
+- 导出基本数据类型：当你将一个基本数据类型（number，string，boolean，null，undefined）赋值类`module.exports`或其属性时，导出的是该值的一个**拷贝**
 
-// b.js
-let count = 0,num=11
-setTimeout(()=>{
-  count++
-  module.exports.num = num
-  module.exports.count = count
-  console.log('b---modify-count',count)
-},1000)
-module.exports = {
-  count
-}
+- 后续导入：其他模块require同一个模块时，**不会重新执行该模块的代码**。他们得到的是缓存中`module.exports`对象的引用
 
-```
+- 修改影响：
 
-#### 结果
+  - 修改导出的**基本数据类型**本身：如果a模块直接导出一个基本数据类型`let num = 0;module.exports = num;`b模块通过`let a = require('./a.js');a = 20`试图修改，是无效的，a在b模块中只是一个局部变量，储存的是num初始值的拷贝。修改b中的局部变量a不会影响a模块内部的num，更不会影响c模块导入的a模块中的num变量。**值拷贝，不影响原模块**
 
-```
-a---load 0
-a---modifiy-count,a的修改是否会影响b导出count的值 22
-输出对象--load { count: 0, num2: 33 }
-b---modify-count 1
-观察b修改count是否影响a导入count的值 22
-输出对象--modify { count: 1, num2: 33, num: 11 }
-```
+  - 修改导出的**对象的属性**：如果a模块导出一个对象`module.exports = {count:0}`，b模块通过`let count = require('./a.js');a.count = 10`，修改了`a.count`。因为b和c模块导入的是只想同一个缓存对象的引用，所以c模块访问`a.count`时的值是被b模块修改后的值10。**对象引用，修改会影响**
 
-对于基本数据类型，无论在导出位置修改导出值还是在导入位置修改导入值，都不会影响到两个文件中导出导入值的变化
+  - 导出模块内部方法修改其自身状态
 
-#### 结论
+    ```JavaScript
+    //a.js
+    let internalCount = 0
+    module.exports = {
+        getCount:()=>internalCount,
+        increment:()=>{internalCOunt++}
+    }
+    ```
 
-在Common.js中，导出的是`module.exports`，导入的是变量赋值。当`module.exports`的值是字符串、数字等原始数据类型时，赋值是**值拷贝**，所以无论在哪里修改都**不会影响**到其他地方导入该值的改变
+    b模块导入a模块，调用a.increment()，会修改a模块作用域内的internalCount。c模块调用a.getCount()时，因为getCount方法实在a模块的闭包中定义的，他访问的是最新的internalCount，所以c会看到增加后的值。这是因为b和c通过a模块导出的方法简介访问和修改了a模块内部的变量（不是直接修改导出的值本身）
 
-### 引用数据类型
+## ES Module
 
-```js
-// a.js
-const objM = require('./b.js')
-require('./c.js')
-let {obj,changeName} = require('./b.js')
+- 模块初始化：ES模块在首次被导入时执行一次，模块的顶层代码执行，建立导出绑定
 
-console.log('a模块--obj',obj)
-changeName('ken')
-obj.age = 222
-console.log('a模块-obj-update',obj)
-console.log('a模块-objM-update',objM.obj)
+- 导出绑定：ES Module的实行概念是“活的绑定”。当你使用export导出变量（无论是基本类型还是对象）时，导出的不是值本身，而是**指向该模块内部变量的绑定（引用）**
 
-// b.js
-let obj = {
-  name:'ben',
-  age:20
-}
-function changeName(name){
-  obj.name = name
-  console.log('changeName',obj)
-}
+- 导入：其他模块使用`import`导入时，他们获得的是只想被导出模块内部变量的绑定
 
-const constant = 'hello'
-module.exports = {
-  obj,
-  changeName
-}
+- 修改影响：
 
-// c.js
-const objM = require('./b.js')
-setTimeout(() => {
-  console.log('c---module',objM)
-  console.log('c---module---基本数据类型',objM.constant)
-}, 1500);
-```
+  - 模块内部修改：
 
-#### 结果
+    ```JavaScript
+    //a.js
+    export let count = 0
+    export function increment(){
+        count++
+    }
+    ```
 
-```
-a模块--obj { name: 'ben', age: 20 }
-changeName { name: 'ken', age: 20 }
-a模块-obj-update { name: 'ken', age: 222 }
-a模块-objM-update { name: 'ken', age: 222 }
-c---module {
-  obj: { name: 'ken', age: 222 },
-  changeName: [Function: changeName],
-  constant: 'hello'
-}
-```
+    b模块导入`count`和`increment`，并调用increment()，c模块导入`count`，因为b和c导入的`count`都指向a模块内部同一个变量`count`的绑定，所以当`a.increment()`修改了count后，c模块访问count时会立即看到更新后的值1。**使用内部方法修改，会受影响**
 
-#### 结论
+  - 导入模块修改：
 
-在Common.js中，如果导出的引用数据类型，导入的是该数据的**引用**，无论在该对象所在的模块还是在导入该对象的模块修改引用数据类型中的数据，都会对别处**导入该对象的模块产生影响**
+    如果b模块试图直接修改导入a模块的count变量，`import { count } from './a.mjs'; count = 10;`，在**严格模式下（ES模块默认时严格模式），这会抛出一个TypeError，因为导入的绑定是只读的。**导入模块不能修改从另一个模块导入的原始值或对象的绑定。修改必须发生在导出该变量的模块内部（如通过导出的函数修改）。**不影响，会报错**
 
-## ESM
+## 总结对比
 
-```js
-//a.js
-import bModule,{b,modify} from './b.js'
-import './c.js'
-console.log('a模块--before',bModule.a,b)
-modify(11,22)
-console.log('a模块--after',bModule.a,b)
-setTimeout(()=>{
-  bModule.a='a模块修改了b导出的对象的属性a'
-  console.log('a模块--修改bModule对象的a属性',bModule.a)
-},500)
+| 特性                 | CommonJS                                   | ES Module                              |
+| -------------------- | ------------------------------------------ | -------------------------------------- |
+| 导出机制             | 导出module.exports的值                     | 导出变量的“活的绑定”                   |
+| 模块初始化次数       | 仅首次require执行，结果缓存                | 仅首次import执行                       |
+| 后续导入获取         | 缓存中module.exports的引用                 | 指向模块内部导出变量的绑定             |
+| 修改导出对象属性     | 影响可见（所有导入共享同一个对象引用）     | 影响可见（所有导入绑定到同一内部变量） |
+| 模块内部修改导出变量 | 影响可见（需通过导出方法间接修改内部状态） | 影响可见（直接修改导出变量）           |
+| 导入模块修改基本类型 | 修改的是局部拷贝，不影响其他模块/源模块    | 不允许（严格模式会报错）               |
+| 导入模块修改对象属性 | 允许且影响可见（共享引用）                 | 允许且影响可见（绑定到同一内部对象）   |
 
 
-//b.js
-let a = 1
-export let b = 2
-a=111
-export default {
-  a
-}
-export const modify = (value1,value2)=>{
-  a=value1
-  b=value2
-}
-setTimeout(()=>{
-  modify(11,22)
-},1000)
-
-//c.js
-import bModule,{b} from './b.js'
-setTimeout(()=>{
-  console.log('c模块---bModule',bModule,b)
-},2000)
-```
-
-### 结果
-
-```
-a模块--before 111 2
-a模块--after 111 22
-a模块--修改bModule对象的a属性 a模块修改了b导出的对象的属性a
-c模块---bModule a模块修改了b导出的对象的属性a 22
-```
-
-### 结论
-
-1. `export`或`export default`的任何类型的数据，`import`后都**不可重新赋值**，数据是`只读`的
-2. `export default`导出的是一个**对象的引用**，**任何模块可修改这个对象**，**导入该值使用时也会发生改变**
-3. `export`基本数据类型，因为数据是只读的，只能通过导出该数据的模块中进行修改，可通过导出一个修改该数据的方法来修改基本数据类型。与common.js不同，修改后其他模块导入该数据也会改变
-4. 无论基本数据类型还是引用数据类型，导出的值发生改变，其他模块导入该值使用时也会发生改变
 
 ## 总结
 
-Common.js导出的是`module.exports`对象，Common.js的导入就是变量赋值，当`module.exports`的值是字符串、数字等原始数据类型时，赋值是值拷贝，所以才会产生修改导出的值不会导致
+Common.js的`module.exports`是一个对象，`exports`是`module.exports`的引用。
+
+Common.js导出的是值（基本类型是拷贝）或对象引用，模块间共享状态主要通过**共享导出的对象引用**或通过导出的函数修改模块内部状态来实现。直接导出的**基本类型值**在不同模块中是**独立的拷贝**
 
 Common.js导出的值是对象时，导入的是对象的引用，无论哪个模块修改该对象，使用该对象的模块的数据也会发生改变
 
-`export`导出的所有数据都是**只读**的
-
-修改`export`导出的数据，如基本数据类型，可以通过导出一个方法来修改
+ES Module导出的是指向模块内部变量的绑定。无论导出的是基本类型还是对象，只要导出模块内部修改了该变量的值，所有导入该绑定的地方都会立即看到更新。导入方不能直接修改导入的绑定（只读），可通过导出模块的方法来修改
 
 `export default`导出的是一个**对象的引用**，可以对引用对象进行修改，但不能重新赋值
 
-`export`导出的数据发生改变（无论基本数据类型还是引用数据类型），其他模块`import`数据使用时也会发生改变
+## 最佳实践
+
+无论使用CommonJS还是ES Module，都应该
+
+1. 避免在导入模块中直接修改导入的值，尤其是基本数据类型
+2. 通过导入模块内部导出的方法来修改导入的值的状态
+
+### why
+
+- 清晰性和可预测性：状态的变化逻辑被封装在定义该状态的模块内部
+- 控制与封装：导出模块可以完全控制其内部状态的修改方式。它可以在方法中添加验证逻辑、日志记录、触发事件、执行副作用等。如果直接在外部修改会破坏这种封装性
+- 维护性：如果需要改变状态管理的方式，只需要修改导出模块内部的方法实现，而无需修改所有导入该状态并直接操作它的地方
+- 符合模块化原则：模块应该提供接口供其他模块使用，而不是暴露其内部实现细节
+- 规避机制差异带来的陷阱
+  - CommonJS：避免了直接修改基本类型无效的困惑（修改的是拷贝）
+  - ES Module：避免了因尝试修改只读绑定而导致运行时错误
+  - 两者都避免了因直接修改共享对象属性而可能导致的难以追踪的副作用（虽然有时需要共享对象，但通过方法修改其关键状态仍是更好的控制方式）
 
 ## 参考
 
