@@ -1,0 +1,1 @@
+import{_ as o,o as t,c as s,b as e,d as c}from"./app-d4c6289a.js";const n={},_=e("p",null,[c("可以使用"),e("code",null,"vite-plugin-svg-icons"),c("插件")],-1),l=[_];function a(r,i){return t(),s("div",null,l)}const u=o(n,[["render",a],["__file","svgicon.html.vue"]]);export{u as default};
