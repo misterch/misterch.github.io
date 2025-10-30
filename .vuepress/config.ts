@@ -55,7 +55,7 @@ export default defineUserConfig({
         {
           text:"场景",
           children: ["pullbranch","mergeTemplate"]
-        }
+        },
         {
           text: "指令详情",
           children:["clone","checkout","restore","stash","log","reflog"]
