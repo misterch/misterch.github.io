@@ -1,5 +1,5 @@
 ---
-title: 箭头函数
+title: 箭头函数及务必使用function的场景
 date: 2023-11-02
 categories: 
  - javascript
@@ -38,7 +38,7 @@ const obj = {
 
 箭头函数是一个**函数表达式**，理论上，任何使用函数表达式的场景都可以使用箭头函数
 
-## 注意细节
+### 注意细节
 
 :::tip
 
@@ -84,8 +84,171 @@ const obj = {
 
 :::
 
-## 应用场景
+### 应用场景
 
 1. 临时性使用的函数，如：事件处理函数，异步处理函数等等临时性函数
 2. 为了绑定箭头函数外层函数的this
-3. 在不影响其他代码的情况下，保持代码的简洁，如：数组方法中的回调函数回调函数
+3. 在不影响其他代码的情况下，保持代码的简洁，如：数组方法(map、filter、forEach等)中的回调函数
+
+## 使用function的场景
+
+### 场景一：对象的方法
+
+❌**错误示范（使用箭头函数）**
+
+当我们定义一个对象的方法时，通常希望`this`指向该对象本身，一边访问其属性
+
+```javascript
+const person = {
+    name:"老陈",
+    sayName:()=>{
+        // this指向全局作用域，而不是person对象，this.name输出undefined
+        console.log(`大家好，我是${this.name}`)
+    }
+}
+```
+
+这个例子中，箭头函数`sayName`在`person`对象中定义，但它的`this`捕获的是定义`person`对象时的上下文，即全局作用域
+
+✅ **正确姿势 (使用 function)**
+
+```javascript
+const person = {
+    name:"老陈",
+    sayName:function(){
+        // this在调用时被动态绑定为person对象
+        console.log(`大家好，我是${this.name}`)
+    }
+}
+```
+
+**结论：**当我们为对象定义一个需要引用该对象自身属性的方法时，使用`function`或ES6方法简写
+
+### 场景二：DOM事件监听器
+
+在使用`addEventListener`为DOM元素绑定事件时，我们常常需要访问触发该事件的元素本身（例如修改样式，内容等），传统`function`会自动将`this`绑定到该DOM元素上
+
+❌ 错误示范 (使用箭头函数)
+
+```javascript
+const button = document.getElementById('myButton');
+
+button.addEventListener('click', () => {
+  // 这里的 this 依然是 window 或 undefined，而不是 button 元素
+  this.classList.toggle('active'); // TypeError: Cannot read properties of undefined (reading 'classList')
+});
+```
+
+箭头函数从外部作用域捕获this，导致我们无法直接操作点击的按钮
+
+✅ 正确姿势 (使用 function)
+
+```JavaScript
+const button = document.getElementById('myButton');
+
+button.addEventListener('click', function() {
+  // 在这里，this 被正确地绑定为触发事件的 button 元素
+  console.log(this); // <button id="myButton">...</button>
+  this.classList.toggle('active'); // 正常工作
+});
+```
+
+**结论：**在DOM事件监听回调中，如果我们需要用`this`来引用触发事件的元素，使用`function`
+
+### 场景三：构造函数
+
+箭头函数在设计上就不能作为构造函数使用。如果尝试使用`new`关键字来调用一个箭头函数，JavaScript会直接抛出错误。这是因为构造函数需要有自己的`this`来指向新创建的实例，并且需要一个`prototype`属性，而箭头函数两者都不具备
+
+❌ 错误示范 (使用箭头函数)
+
+```javascript
+const Car = (brand)=>{
+    this.brand = brand
+}
+const myCar = new Car('Zeekr') //UnCaught TypeError: Car is not a constructor
+```
+
+✅ 正确姿势 (使用 function 或 class)
+
+```javascript
+function Car(brand){
+    this.brand = brand
+}
+const myCar = new Car('Zeekr')
+console.log(myCar.brand) //Zeekr
+
+class Car{
+    constructor(brand){
+        this.brand = brand
+    }
+}
+```
+
+**结论：** 永远不要用箭头函数作为构造函数。请使用 `function` 或 `class`
+
+### 场景四：原型方法
+
+与对象方法类似，当我们为构造函数的原型`prototype`添加方法时，我们也希望`this`指向调用该方法的实例
+
+❌ 错误示范 (使用箭头函数)
+
+```JavaScript
+function Person(name){
+    this.name = name
+}
+Person.prototype.greet = ()=>{
+    //this捕获的是定义greet时的全局作用域window
+    console.log(`Hello,我叫${this.name}`)
+}
+```
+
+✅ 正确姿舍 (使用 function)
+
+```JavaScript
+function Person(name){
+    this.name = name
+}
+Person.prototype.greet = function(){
+    //this指向调用greet方法的实例
+    console.log(`Hello,我叫${this.name}`)
+}
+
+const ben = new Person('ben')
+ben.greet()
+```
+
+**结论：** 在 `prototype` 上定义方法时，请使用 `function`，以确保 `this` 指向类的实例
+
+### 场景五：需要arguments对象的函数
+
+箭头函数没有自己的`arguments`对象。`arguments`时一个类数组对象，包含了函数被调用时传入的所有参数。如果我们在箭头函数内部访问`arguments`，它只会访问到外层（如果存在）传统函数的`arguments`对象
+
+❌ 错误示范 (使用箭头函数)
+
+```JavaScript
+const myFunc = ()=>{
+    console.log(arguments) //Uncaught ReferenceError: arguments is not defined
+}
+myFunc(1,2,3)
+```
+
+✅ 正确姿势 (使用 function)
+
+```javascript
+function myFunc(){
+    console.log(arguments) //Arguments(3)[1,2,3,callee:f,Symbol(Symbol.iterator)]
+    const args = Array.from(arguments)
+    console.log(args) // "1,2,3"
+}
+myFunc(1,2,3)
+```
+
+**注意**：在现代JavaScript中，更推荐使用**剩余参数（...args）**来处理不确定数量的参数。剩余参数是真正的数组，并且它在箭头函数和传统函数中都能正常工作。
+
+```JavaScript
+const myFuncWithRest = (...args)=>{
+    console.log(args)//[1,2,3]
+}
+myFuncWithRest(1,2,3)
+```
+

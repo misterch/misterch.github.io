@@ -48,13 +48,69 @@ Promise A+ 规定：
 
    - 若没有相关的后续处理，新任务的状态和前任务一致，数据为前任务的数据
 
+     ```javascript
+     // fulfilled 分支无回调
+     Promise.resolve('A').then().then(v => console.log(v));   // A
+     // rejected 分支无回调
+     Promise.reject('E').then().catch(e => console.log(e));   // E
+     ```
+
+     关键点：`.then()` 没有传任何参数，两个分支都「不是函数」，所以原样透传状态与值。
+
+     
+
    - 若有后续处理但还未执行，新任务挂起。
+
+     ```javascript
+     const p  = new Promise(r => setTimeout(() => r('A'), 100));
+     const p2 = p.then(v => v + '!');
+     
+     console.log(p2);              // Promise { <pending> }   ← 同步时刻
+     p2.then(v => console.log(v)); // A!                      ← 100ms 后
+     ```
+
+     关键点：`then` 返回时回调还没跑，`p2` 只能挂起；最终状态要等回调执行完才确定。
+
+     
+
    - 若后续处理执行了，则根据后续处理的情况确定新任务的状态
      - 后续处理执行无错，新任务的状态为完成，数据为后续处理的返回值
+
+       ```javascript
+       Promise.resolve('A').then(v => v + 'B').then(v => console.log(v)); // AB
+       ```
+
+       
+
      - 后续处理执行有错，新任务的状态为失败，数据为异常对象
+
+       ```javascript
+       Promise.resolve('A')
+         .then(() => { throw new Error('boom') })
+         .catch(e => console.log(e.message));   // boom
+       ```
+
+       
+
      - 后续执行后返回的是一个任务对象，新任务的状态和数据与该任务对象一致
 
+       ```javascript
+       // 5.1 返回已拒绝的 Promise
+       Promise.resolve('A').then(() => Promise.reject('E2'))
+         .catch(e => console.log(e));                            // E2
+       
+       // 5.2 返回挂起的 Promise
+       const p5 = Promise.resolve('A')
+         .then(() => new Promise(r => setTimeout(() => r('late'), 500)));
+       console.log(p5);            // Promise { <pending> }
+       p5.then(v => console.log(v));  // late（500ms 后）
+       
+       // 5.3 返回 thenable（非真 Promise 也认）
+       Promise.resolve('A').then(() => ({ then(res) { res('thenable'); } }))
+         .then(v => console.log(v));                             // thenable
+       ```
 
+       
 
 ## 实现Promise核心部分
 
@@ -129,13 +185,13 @@ class MyPromise{
   }
   /**
    * 
-   * @param {Function} onFullfilled 任务成功后的回调
+   * @param {Function} onFulfilled 任务成功后的回调
    * @param {Function} onRejected 任务失败后的回调
    * @returns {Promise} Promise 返回一个promise对象
    */
-  then(onFullfilled,onRejected){
+  then(onFulfilled,onRejected){
     return new MyPromise((resolve,reject) =>{
-      this._pushToQueue(onFullfilled,FULLFILLED,resolve,reject)
+      this._pushToQueue(onFulfilled,FULLFILLED,resolve,reject)
       this._pushToQueue(onRejected,REJECTED,resolve,reject)
       // 调用then时，状态已经确定，执行队列
       this._runHandlers()
@@ -234,10 +290,10 @@ setTimeout(()=>{
 
 ## 总结
 
-`then`函数是把then的回调函数加入到队列中（微队列），等待**状态**确定为settled（fulfilled、rejected）状态，才会执行
+1. `then`是把回调函数加入到**微队列**，等待**状态**确定为settled（fulfilled、rejected）状态，才会执行
 
-多次调用`then`函数传入回调函数，会将回调函数加入到队列中，等待状态确定，一次执行队列的所有回调函数
+2. 多次调用`then`函数传入回调函数，会将回调函数加入到队列中，等待状态确定，**一次执行队列的所有回调**
 
-在状态变为确认状态或者调用then函数，都会触发执行队列
+3. 在状态变为确认或者调用then函数，都会触发执行队列
 
-`then`的回调函数如果不是一个函数，则状态与前一个`then`的状态保持一致
+4. `then`的回调函数如果不是函数，则状态与前一个`then`的状态保持一致
